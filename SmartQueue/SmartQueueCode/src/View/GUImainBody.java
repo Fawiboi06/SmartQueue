@@ -76,9 +76,7 @@ public class GUImainBody extends JFrame {
         bookingInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JTextArea infoArea = new JTextArea(
-                "Här kan man senare visa information\n" +
-                        "om vald dag, tider och bokningar.\n\n" +
-                        "Just nu är detta bara GUI-skelett."
+                "info om bokningar"
         );
         infoArea.setEditable(false);
         infoArea.setLineWrap(true);
