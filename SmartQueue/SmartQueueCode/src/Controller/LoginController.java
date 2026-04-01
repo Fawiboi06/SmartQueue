@@ -10,4 +10,16 @@ public class LoginController {
        initController();
        view.setVisible(true);
    }
+   private void login(){
+        String username=view.getUsername();
+        String password=view.getPassword();
+        if(username.equals("admin") && password.equals("1234")){
+            JOptionPane.showMessageDialog(view,"Login succesful");
+            view.dispose();
+                    new ControllerAll();
+        }
+        else{
+            JOptionPane.showMessageDialog(view."Wrong login");
+        }
+    }
 }
