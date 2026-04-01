@@ -1,14 +1,14 @@
 package View;
 import javax.swing.*;
 import java.awt.*;
-public class Loginview extends JFrame {
+public class LoginView extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
 
-    public Loginview(){
+    public LoginView(){
         setTitle("Login");
-        setSize(300,200);
+        setSize(200,150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         JPanel panel=new JPanel(new GridLayout(3,2,10,10));
@@ -18,7 +18,7 @@ public class Loginview extends JFrame {
         panel.add(usernameField);
 
         panel.add(new JLabel("Password:"));
-        usernameField=new JTextField();
+        passwordField=new JPasswordField();
         panel.add(passwordField);
 
         loginButton=new JButton("Login");
