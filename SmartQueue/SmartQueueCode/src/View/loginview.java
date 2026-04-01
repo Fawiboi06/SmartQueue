@@ -25,4 +25,13 @@ public class loginview extends JFrame {
 
     add(panel);
     }
+    public String getUsername(){
+        return usernameField.getText();
+    }
+    public String getPassword(){
+        return new String(passwordField.getPassword());
+    }
+    public JButton getLoginButton(){
+        return loginButton;
+    }
 }
