@@ -1,10 +1,10 @@
 package View;
 import java.swing.*;
 import java.awt.*;
-public class loginview extends JFrame {
+public class Loginview extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
-    public LoginView(){
+    public Loginview(){
     setTitle("Login");
     setSize(300,200);
     setDefaultCloseOperation(JFrame.Exit_on_close);
