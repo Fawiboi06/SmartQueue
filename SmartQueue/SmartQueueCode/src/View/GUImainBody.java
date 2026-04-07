@@ -30,10 +30,10 @@ public class GUImainBody extends JFrame {
         JPanel calendarPanel = new JPanel(new BorderLayout(10, 10));
         calendarPanel.setBorder(BorderFactory.createTitledBorder("Kalender"));
 
-        JPanel topCalenderPanel = new JPanel(new BorderLayout (10, 0));
+        JPanel topCalenderPanel = new JPanel(new BorderLayout(10, 0));
         previousButton = new JButton("<");
         monthLabel = new JLabel("April 2026", SwingConstants.CENTER);
-        monthLabel.setFont (new Font("Arial", Font.BOLD, 18));
+        monthLabel.setFont(new Font("Arial", Font.BOLD, 18));
         nextButton = new JButton(">");
 
         topCalenderPanel.add(previousButton, BorderLayout.WEST);
@@ -45,17 +45,26 @@ public class GUImainBody extends JFrame {
         JPanel daysPanel = new JPanel(new GridLayout(6, 7, 8, 8));
 
         String[] daysName = {"mån", "tis", "ons", "tors", "fre", "lör", "sön"};
-        for (String dayName : daysName){
+        for (String dayName : daysName) {
             JLabel dayLabel = new JLabel(dayName, SwingConstants.CENTER);
             dayLabel.setFont(new Font("Arial", Font.BOLD, 14));
             daysPanel.add(dayLabel);
         }
-        for (int i = 1; i <= 30; i++){
+        for (int i = 1; i <= 30; i++) {
             JButton dayButton = new JButton(String.valueOf(i));
+
+            int selectedDay = i;
+            dayButton.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    setVisible(false);
+                    new DayBookingView(GUImainBody.this, selectedDay);
+                }
+            });
+
             daysPanel.add(dayButton);
         }
-
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             JLabel emptyLabel = new JLabel("");
             daysPanel.add(emptyLabel);
 
@@ -119,4 +128,6 @@ public class GUImainBody extends JFrame {
 
         setContentPane(mainPanel);
     }
+
+
 }
