@@ -10,7 +10,7 @@ public class ControllerAll {
     private ArrayList<Booking> bookings;
     private String username;
 
-    public ControllerAll(String username) {
+    public ControllerAll() {
         this.view = new GUImainBody();
         this.username = username;
         this.bookings = new ArrayList<>();
