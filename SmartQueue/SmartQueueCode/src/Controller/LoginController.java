@@ -26,6 +26,6 @@ public class LoginController {
 
         JOptionPane.showMessageDialog(view,"Login succesful");
         view.dispose();
-        new ControllerAll();
+        new ControllerAll(username);
     }
 }
