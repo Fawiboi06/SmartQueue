@@ -5,7 +5,11 @@ import java.awt.*;
 
 public class DayBookingView extends JFrame {
 
-    public DayBookingView(GUImainBody mainWindow, int day){
+    private JButton bokaButton;
+    private JButton seeMoreButton;
+    private JButton backButton;
+
+    public DayBookingView(int day){
         setTitle("Bokningar för dag " + day);
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -59,14 +63,10 @@ public class DayBookingView extends JFrame {
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        JButton bokaButton = new JButton("Boka");
-        JButton seeMoreButton = new JButton("Se mer");
-        JButton backButton = new JButton("Tillbaka");
+        bokaButton = new JButton("Boka");
+        seeMoreButton = new JButton("Se mer");
+        backButton = new JButton("Tillbaka");
 
-        backButton.addActionListener(e -> {
-            mainWindow.setVisible(true);
-            dispose();
-        });
 
         bottomPanel.add(bokaButton);
         bottomPanel.add(seeMoreButton);
@@ -75,6 +75,17 @@ public class DayBookingView extends JFrame {
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         setContentPane(mainPanel);
-        setVisible(true);
+    }
+
+    public JButton getBokaButton() {
+        return bokaButton;
+    }
+
+    public JButton getSeeMoreButton() {
+        return seeMoreButton;
+    }
+
+    public JButton getBackButton() {
+        return backButton;
     }
 }
