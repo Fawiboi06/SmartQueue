@@ -3,6 +3,8 @@ package View;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GUImainBody extends JFrame {
 
@@ -11,8 +13,14 @@ public class GUImainBody extends JFrame {
     private JButton nextButton;
     private JButton bookingButton;
     private JButton viewBookingButton;
+    private JButton backButton;
+    private JButton closeButton;
+
+    private List<JButton> dayButtons;
 
     public GUImainBody() {
+        dayButtons = new ArrayList<>();
+
         setTitle("SmartQueue");
         setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,22 +60,12 @@ public class GUImainBody extends JFrame {
         }
         for (int i = 1; i <= 30; i++) {
             JButton dayButton = new JButton(String.valueOf(i));
-
-            int selectedDay = i;
-            dayButton.addActionListener(new java.awt.event.ActionListener() {
-                @Override
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    setVisible(false);
-                    new DayBookingView(GUImainBody.this, selectedDay);
-                }
-            });
-
+            dayButtons.add(dayButton);
             daysPanel.add(dayButton);
         }
         for (int i = 0; i < 5; i++) {
             JLabel emptyLabel = new JLabel("");
             daysPanel.add(emptyLabel);
-
         }
 
         calendarPanel.add(daysPanel, BorderLayout.CENTER);
@@ -84,9 +82,7 @@ public class GUImainBody extends JFrame {
         bookingInfoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         bookingInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JTextArea infoArea = new JTextArea(
-                "info om bokningar"
-        );
+        JTextArea infoArea = new JTextArea("Info om bokningar");
         infoArea.setEditable(false);
         infoArea.setLineWrap(true);
         infoArea.setWrapStyleWord(true);
@@ -118,8 +114,8 @@ public class GUImainBody extends JFrame {
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton backButton = new JButton("Tillbaka");
-        JButton closeButton = new JButton("Stäng");
+        backButton = new JButton("Tillbaka");
+        closeButton = new JButton("Stäng");
 
         bottomPanel.add(backButton);
         bottomPanel.add(closeButton);
@@ -129,5 +125,36 @@ public class GUImainBody extends JFrame {
         setContentPane(mainPanel);
     }
 
+    public List<JButton> getDayButtons() {
+        return dayButtons;
+    }
 
+    public JButton getBackButton() {
+        return backButton;
+    }
+
+    public JButton getCloseButton() {
+        return closeButton;
+    }
+
+    public JButton getBookingButton() {
+        return bookingButton;
+    }
+
+    public JButton getViewBookingButton() {
+        return viewBookingButton;
+    }
+
+    public JButton getPreviousButton() {
+        return previousButton;
+    }
+
+    public JButton getNextButton() {
+        return nextButton;
+    }
+
+    public JLabel getMonthLabel() {
+        return monthLabel;
+    }
 }
+
