@@ -16,6 +16,9 @@ public class SmartQueueController {
 
     private final ArrayList<Booking> bookings;
     private String username;
+    private String time;
+
+
 
     public SmartQueueController() {
         bookings = new ArrayList<>();
@@ -77,7 +80,7 @@ public class SmartQueueController {
     }
 
     private void addBooking(String date) {
-        Booking booking = new Booking(date, username);
+        Booking booking = new Booking(date, time, username);
         bookings.add(booking);
         System.out.println("Booking added for " + date);
     }

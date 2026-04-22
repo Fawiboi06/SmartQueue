@@ -10,13 +10,21 @@ public class User {
         this.password=password;
         this.role=role;
     }
+
     public String getUsername(){
         return username;
     }
-    public boolean checkpassword(String input){
-        return password.equals(input);
+
+    public boolean checkPassword(String input){
+        return password != null && password.equals(input);
     }
+
     public String getRole(){
         return role;
+    }
+
+    @Override
+    public String toString(){
+        return username + " (" + role + ")";
     }
 }
