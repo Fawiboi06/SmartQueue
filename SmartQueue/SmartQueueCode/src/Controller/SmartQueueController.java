@@ -4,6 +4,7 @@ import View.DayBookingView;
 import View.GUImainBody;
 import View.LoginView;
 import model.Booking;
+import model.BookingManager;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -14,14 +15,14 @@ public class SmartQueueController {
     private GUImainBody mainView;
     private DayBookingView dayBookingView;
 
-    private final ArrayList<Booking> bookings;
+    private final BookingManager bookingManager;
     private String username;
     private String time;
 
 
 
     public SmartQueueController() {
-        bookings = new ArrayList<>();
+        bookingManager = new BookingManager();
         showLoginView();
     }
 
@@ -83,17 +84,17 @@ public class SmartQueueController {
 
     private void addBooking(String date,String time) {
         Booking booking = new Booking(date, time, username);
-        bookings.add(booking);
-        System.out.println("Booking added for " + date+ "at"+time);
+        bookingManager.addBooking(booking);
+        System.out.println("Booking added for " + date+ "at" + time);
     }
 
     private void showBookings() {
-        if(bookings.isEmpty()) {
+        if(bookingManager.isEmpty()) {
             JOptionPane.showMessageDialog(dayBookingView, "Inga bokningar finns ännu.");
             return;
         }
         StringBuilder builder = new StringBuilder();
-        for(Booking booking : bookings) {
+        for(Booking booking : bookingManager.getBookings()) {
             builder.append(booking.getDate())
                     .append(" - ")
                     .append(booking.getUsername())
