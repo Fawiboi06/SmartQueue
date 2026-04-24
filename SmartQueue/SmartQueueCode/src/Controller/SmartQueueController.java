@@ -77,7 +77,7 @@ public class SmartQueueController {
             String date="2026-04-" + String.format("%02d", day);
             String time=dayBookingView.getSelectedTime();
             addBooking(date,time);
-            JOptionPane.showMessageDialog(dayBookingView, "Bokning skapad:" + date+ "kl"+ time);
+            JOptionPane.showMessageDialog(dayBookingView, "Bokning skapad:" + date + "kl" + time);
             dayBookingView.resetTime();
         });
         dayBookingView.getSeeMoreButton().addActionListener(e -> showBookings());

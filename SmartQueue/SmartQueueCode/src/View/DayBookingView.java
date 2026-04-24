@@ -73,7 +73,7 @@ public class DayBookingView extends JFrame {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         bokaButton = new JButton("Boka");
-        seeMoreButton = new JButton("Se mer");
+        seeMoreButton = new JButton("Visa bokningar");
         backButton = new JButton("Tillbaka");
 
         bottomPanel.add(timeBox);
