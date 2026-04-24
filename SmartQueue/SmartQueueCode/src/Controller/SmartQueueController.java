@@ -93,14 +93,19 @@ public class SmartQueueController {
             JOptionPane.showMessageDialog(dayBookingView, "Inga bokningar finns ännu.");
             return;
         }
+        String selectedDate= "2026-04-02";
+
         StringBuilder builder = new StringBuilder();
         for(Booking booking : bookingManager.getBookings()) {
-            builder.append(booking.getDate())
-                    .append(" - ")
-                    .append(booking.getTime())
-                    .append(" - ")
-                    .append(booking.getUsername())
-                    .append("\n");
+            if (booking.getDate().equals(selectedDate)) {
+                
+                builder.append(booking.getDate())
+                        .append(" - ")
+                        .append(booking.getTime())
+                        .append(" - ")
+                        .append(booking.getUsername())
+                        .append("\n");
+            }
         }
         JOptionPane.showMessageDialog(dayBookingView, builder.toString(), "Bokningar",
                 JOptionPane.INFORMATION_MESSAGE);
