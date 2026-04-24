@@ -97,6 +97,8 @@ public class SmartQueueController {
         for(Booking booking : bookingManager.getBookings()) {
             builder.append(booking.getDate())
                     .append(" - ")
+                    .append(booking.getTime())
+                    .append(" - ")
                     .append(booking.getUsername())
                     .append("\n");
         }
