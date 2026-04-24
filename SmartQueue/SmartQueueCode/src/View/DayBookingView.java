@@ -101,4 +101,7 @@ public class DayBookingView extends JFrame {
     public String getSelectedTime(){
         return(String) timeBox.getSelectedItem();
     }
+    public void resetTime(){
+        timeBox.setSelectedIndex(0);
+    }
 }

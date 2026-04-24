@@ -78,6 +78,7 @@ public class SmartQueueController {
             String time=dayBookingView.getSelectedTime();
             addBooking(date,time);
             JOptionPane.showMessageDialog(dayBookingView, "Bokning skapad:" + date+ "kl"+ time);
+            dayBookingView.resetTime();
         });
         dayBookingView.getSeeMoreButton().addActionListener(e -> showBookings());
         dayBookingView.setVisible(true);
@@ -90,7 +91,7 @@ public class SmartQueueController {
         }
         for(Booking b:bookingManager.getBookings()) {
             if (b.getDate().equals(date) && b.getTime().equals(time)) {
-                JOptionPane.showMessageDialog(dayBookingView, "Den tiden är redan bokad");
+                JOptionPane.showMessageDialog(dayBookingView, "Den tiden är redan bokad,välj en annan");
                 return;
             }
         }
@@ -114,9 +115,9 @@ public class SmartQueueController {
                 found= true;
 
                 builder.append(booking.getDate())
-                        .append(" - ")
+                        .append("|Tid: ")
                         .append(booking.getTime())
-                        .append(" - ")
+                        .append(" |Namn ")
                         .append(booking.getUsername())
                         .append("\n");
             }
