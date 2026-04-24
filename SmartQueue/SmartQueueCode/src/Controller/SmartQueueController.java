@@ -77,13 +77,17 @@ public class SmartQueueController {
             String date="2026-04-" + String.format("%02d", day);
             String time=dayBookingView.getSelectedTime();
             addBooking(date,time);
-            JOptionPane.showMessageDialog(dayBookingView, "Bokning skapad.");
+            JOptionPane.showMessageDialog(dayBookingView, "Bokning skapad:" + date+ "kl"+ time);
         });
         dayBookingView.getSeeMoreButton().addActionListener(e -> showBookings());
         dayBookingView.setVisible(true);
     }
 
     private void addBooking(String date,String time) {
+        if(time==null){
+            JOptionPane.showMessageDialog(dayBookingView,"välj en tid!");
+            return;
+        }
         for(Booking b:bookingManager.getBookings()) {
             if (b.getDate().equals(date) && b.getTime().equals(time)) {
                 JOptionPane.showMessageDialog(dayBookingView, "Den tiden är redan bokad");
