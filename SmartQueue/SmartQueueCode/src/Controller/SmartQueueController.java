@@ -72,17 +72,19 @@ public class SmartQueueController {
             mainView.setVisible(true);
         });
         dayBookingView.getBokaButton().addActionListener(e -> {
-            addBooking("2026-04-" + String.format("%02d", day));
+            String date="2026-04-" + String.format("%02d", day);
+            String time=dayBookingView.getSelectedTime();
+            addBooking(date,time);
             JOptionPane.showMessageDialog(dayBookingView, "Bokning skapad.");
         });
         dayBookingView.getSeeMoreButton().addActionListener(e -> showBookings());
         dayBookingView.setVisible(true);
     }
 
-    private void addBooking(String date) {
+    private void addBooking(String date,String time) {
         Booking booking = new Booking(date, time, username);
         bookings.add(booking);
-        System.out.println("Booking added for " + date);
+        System.out.println("Booking added for " + date+ "at"+time);
     }
 
     private void showBookings() {

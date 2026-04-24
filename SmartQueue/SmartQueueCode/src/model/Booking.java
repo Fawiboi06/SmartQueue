@@ -6,6 +6,7 @@ public class Booking {
     private String time;
     private String username;
 
+
     public Booking(String date, String time, String username) {
         this.date = date;
         this.username = username;

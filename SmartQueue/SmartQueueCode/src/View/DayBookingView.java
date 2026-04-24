@@ -8,6 +8,7 @@ public class DayBookingView extends JFrame {
     private JButton bokaButton;
     private JButton seeMoreButton;
     private JButton backButton;
+    private JComboBox<String>timeBox;
 
     public DayBookingView(int day){
         setTitle("Bokningar för dag " + day);
@@ -61,6 +62,14 @@ public class DayBookingView extends JFrame {
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
+        timeBox=new JComboBox<>(new String[]{
+            "8:00",
+            "9:00",
+            "10:00",
+            "11:00",
+            "12:00"
+        });
+
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         bokaButton = new JButton("Boka");
@@ -87,5 +96,9 @@ public class DayBookingView extends JFrame {
 
     public JButton getBackButton() {
         return backButton;
+    }
+
+    public String getSelectedTime(){
+        return(String) timeBox.getSelectedItem();
     }
 }
