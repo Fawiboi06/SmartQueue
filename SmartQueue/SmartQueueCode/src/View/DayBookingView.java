@@ -19,7 +19,7 @@ public class DayBookingView extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        JLabel titleLabel = new JLabel("Dag " + day + " - Bokningar", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Vald dag: 2026-04" + String.format("%02d",day),SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
 
@@ -76,7 +76,7 @@ public class DayBookingView extends JFrame {
         seeMoreButton = new JButton("Se mer");
         backButton = new JButton("Tillbaka");
 
-
+        bottomPanel.add(timeBox);
         bottomPanel.add(bokaButton);
         bottomPanel.add(seeMoreButton);
         bottomPanel.add(backButton);

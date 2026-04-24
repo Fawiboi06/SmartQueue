@@ -84,6 +84,12 @@ public class SmartQueueController {
     }
 
     private void addBooking(String date,String time) {
+        for(Booking b:bookingManager.getBookings()) {
+            if (b.getDate().equals(date) && b.getTime().equals(time)) {
+                JOptionPane.showMessageDialog(dayBookingView, "Den tiden är redan bokad");
+                return;
+            }
+        }
         Booking booking = new Booking(date, time, username);
         bookingManager.addBooking(booking);
         System.out.println("Booking added for " + date + "at" + time);
