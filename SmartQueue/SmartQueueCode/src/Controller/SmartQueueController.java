@@ -14,6 +14,7 @@ public class SmartQueueController {
     private LoginView loginView;
     private GUImainBody mainView;
     private DayBookingView dayBookingView;
+    private String selectedDate;
 
     private final BookingManager bookingManager;
     private String username;
@@ -93,12 +94,11 @@ public class SmartQueueController {
             JOptionPane.showMessageDialog(dayBookingView, "Inga bokningar finns ännu.");
             return;
         }
-        String selectedDate= "2026-04-02";
 
         StringBuilder builder = new StringBuilder();
         for(Booking booking : bookingManager.getBookings()) {
             if (booking.getDate().equals(selectedDate)) {
-                
+
                 builder.append(booking.getDate())
                         .append(" - ")
                         .append(booking.getTime())
