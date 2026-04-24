@@ -7,7 +7,6 @@ import model.Booking;
 import model.BookingManager;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class SmartQueueController {
 
@@ -66,6 +65,7 @@ public class SmartQueueController {
     }
 
     private void openDayBookingView(int day) {
+        selectedDate="2026-04-" + String.format("%02d", day);
         mainView.setVisible(false);
         dayBookingView = new DayBookingView(day);
 
@@ -86,7 +86,7 @@ public class SmartQueueController {
     private void addBooking(String date,String time) {
         Booking booking = new Booking(date, time, username);
         bookingManager.addBooking(booking);
-        System.out.println("Booking added for " + date+ "at" + time);
+        System.out.println("Booking added for " + date + "at" + time);
     }
 
     private void showBookings() {
@@ -96,8 +96,12 @@ public class SmartQueueController {
         }
 
         StringBuilder builder = new StringBuilder();
+        boolean  found=false;
+
         for(Booking booking : bookingManager.getBookings()) {
             if (booking.getDate().equals(selectedDate)) {
+
+                found= true;
 
                 builder.append(booking.getDate())
                         .append(" - ")
@@ -106,6 +110,10 @@ public class SmartQueueController {
                         .append(booking.getUsername())
                         .append("\n");
             }
+        }
+        if(!found){
+            JOptionPane.showMessageDialog(dayBookingView, "Inga bokningar för vald dag");
+            return;
         }
         JOptionPane.showMessageDialog(dayBookingView, builder.toString(), "Bokningar",
                 JOptionPane.INFORMATION_MESSAGE);
