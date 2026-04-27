@@ -2,9 +2,9 @@ package model;
 
 public class Booking {
 
-    private String date;
-    private String time;
-    private String username;
+    private final String date;
+    private final String time;
+    private final String username;
 
 
     public Booking(String date, String time, String username) {
@@ -27,6 +27,6 @@ public class Booking {
 
     @Override
     public String toString(){
-        return date + "" + time + "" + " - " + username;
+        return date + "at" + time + " - " + username;
     }
 }

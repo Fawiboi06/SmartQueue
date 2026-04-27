@@ -11,14 +11,22 @@ public class BookingManager{
         bookings = new ArrayList<>();
     }
 
-    public void addBooking(Booking booking){
-        if(booking != null){
-            bookings.add(booking);
+    public void addBooking(Booking booking) {
+        if (booking == null) {
+            return;
         }
+
+        if (booking.getDate() == null || booking.getDate().isBlank()
+                || booking.getTime() == null || booking.getTime().isBlank()
+                || booking.getUsername() == null || booking.getUsername().isBlank()) {
+            return;
+        }
+
+        bookings.add(booking);
     }
 
     public List<Booking> getBookings(){
-        return bookings;
+        return new ArrayList<>(bookings);
     }
 
     public boolean isEmpty() {
