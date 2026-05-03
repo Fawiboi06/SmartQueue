@@ -36,7 +36,7 @@ public class GUImainBody extends JFrame {
         JPanel centerPanel = new JPanel(new BorderLayout(15, 15));
 
         JPanel calendarPanel = new JPanel(new BorderLayout(10, 10));
-        calendarPanel.setBorder(BorderFactory.createTitledBorder("Kalender"));
+        calendarPanel.setBorder(BorderFactory.createTitledBorder("Calender"));
 
         JPanel topCalenderPanel = new JPanel(new BorderLayout(10, 0));
         previousButton = new JButton("<");
@@ -52,7 +52,7 @@ public class GUImainBody extends JFrame {
 
         JPanel daysPanel = new JPanel(new GridLayout(6, 7, 8, 8));
 
-        String[] daysName = {"mån", "tis", "ons", "tors", "fre", "lör", "sön"};
+        String[] daysName = {"Mon", "Tue", "Wen", "Thur", "Fri", "Sat", "Sun"};
         for (String dayName : daysName) {
             JLabel dayLabel = new JLabel(dayName, SwingConstants.CENTER);
             dayLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -72,17 +72,17 @@ public class GUImainBody extends JFrame {
 
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBorder(BorderFactory.createTitledBorder("Valt datum"));
+        infoPanel.setBorder(BorderFactory.createTitledBorder("Choosen date"));
 
-        JLabel selectedDateLabel = new JLabel("Datum: --/--/----");
+        JLabel selectedDateLabel = new JLabel("Date: --/--/----");
         selectedDateLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         selectedDateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel bookingInfoLabel = new JLabel("Bokning: Ingen vald");
+        JLabel bookingInfoLabel = new JLabel("Booking: None selected");
         bookingInfoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         bookingInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JTextArea infoArea = new JTextArea("Info om bokningar");
+        JTextArea infoArea = new JTextArea("Information about bookings");
         infoArea.setEditable(false);
         infoArea.setLineWrap(true);
         infoArea.setWrapStyleWord(true);
@@ -91,10 +91,10 @@ public class GUImainBody extends JFrame {
         JScrollPane scrollPane = new JScrollPane(infoArea);
         scrollPane.setPreferredSize(new Dimension(250, 200));
 
-        bookingButton = new JButton("Boka tid");
+        bookingButton = new JButton("Book time");
         bookingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        viewBookingButton = new JButton("Se bokningar");
+        viewBookingButton = new JButton("See bookings");
         viewBookingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         infoPanel.add(Box.createVerticalStrut(15));
@@ -114,8 +114,8 @@ public class GUImainBody extends JFrame {
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        backButton = new JButton("Tillbaka");
-        closeButton = new JButton("Stäng");
+        backButton = new JButton("Return");
+        closeButton = new JButton("Close");
 
         bottomPanel.add(backButton);
         bottomPanel.add(closeButton);

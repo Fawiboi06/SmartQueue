@@ -136,7 +136,7 @@ public class SmartQueueController {
             return;
         }
 
-        JOptionPane.showMessageDialog(dayBookingView, builder.toString(), "Bokningar",
+        JOptionPane.showMessageDialog(dayBookingView, builder.toString(), "Bookings",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 }
