@@ -15,7 +15,8 @@ public class GUImainBody extends JFrame {
     private JButton viewBookingButton;
     private JButton backButton;
     private JButton closeButton;
-
+    private JTextArea infoArea;
+    private JButton deleteBookingButton;
     private List<JButton> dayButtons;
 
     public GUImainBody() {
@@ -74,7 +75,7 @@ public class GUImainBody extends JFrame {
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Valt datum"));
 
-        JLabel selectedDateLabel = new JLabel("Datum: --/--/----");
+        JLabel selectedDateLabel = new JLabel("Date: --/--/----");
         selectedDateLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         selectedDateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -82,7 +83,7 @@ public class GUImainBody extends JFrame {
         bookingInfoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         bookingInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JTextArea infoArea = new JTextArea("Info om bokningar");
+        infoArea = new JTextArea("No bookings yet.");
         infoArea.setEditable(false);
         infoArea.setLineWrap(true);
         infoArea.setWrapStyleWord(true);
@@ -94,8 +95,10 @@ public class GUImainBody extends JFrame {
         bookingButton = new JButton("Boka tid");
         bookingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        viewBookingButton = new JButton("Se bokningar");
+        viewBookingButton = new JButton("See bookings");
         viewBookingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteBookingButton = new JButton("Delete booking");
+        deleteBookingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         infoPanel.add(Box.createVerticalStrut(15));
         infoPanel.add(selectedDateLabel);
@@ -107,6 +110,8 @@ public class GUImainBody extends JFrame {
         infoPanel.add(bookingButton);
         infoPanel.add(Box.createVerticalStrut(10));
         infoPanel.add(viewBookingButton);
+        infoPanel.add(Box.createVerticalStrut(10));
+        infoPanel.add(deleteBookingButton);
 
         centerPanel.add(calendarPanel, BorderLayout.CENTER);
         centerPanel.add(infoPanel, BorderLayout.EAST);
@@ -114,8 +119,8 @@ public class GUImainBody extends JFrame {
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        backButton = new JButton("Tillbaka");
-        closeButton = new JButton("Stäng");
+        backButton = new JButton("Return");
+        closeButton = new JButton("Close");
 
         bottomPanel.add(backButton);
         bottomPanel.add(closeButton);
@@ -155,6 +160,14 @@ public class GUImainBody extends JFrame {
 
     public JLabel getMonthLabel() {
         return monthLabel;
+    }
+
+    public void updateBookingList(String text) {
+        infoArea.setText(text);
+    }
+
+    public JButton getDeleteBookingButton() {
+        return deleteBookingButton;
     }
 }
 

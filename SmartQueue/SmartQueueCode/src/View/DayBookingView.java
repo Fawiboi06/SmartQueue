@@ -11,7 +11,7 @@ public class DayBookingView extends JFrame {
     private JComboBox<String>timeBox;
 
     public DayBookingView(int day){
-        setTitle("Bokningar för dag " + day);
+        setTitle("Bookings for choosen day " + day);
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -19,14 +19,14 @@ public class DayBookingView extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        JLabel titleLabel = new JLabel("Vald dag: 2026-04" + String.format("%02d",day),SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Choosen day: 2026-04" + String.format("%02d",day),SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new GridLayout(1, 2, 15, 15));
 
         JPanel bookingPanel = new JPanel(new BorderLayout(10, 10));
-        bookingPanel.setBorder(BorderFactory.createTitledBorder("Bokningar"));
+        bookingPanel.setBorder(BorderFactory.createTitledBorder("Bookings"));
 
         JTextArea bookingArea = new JTextArea(
                 "08:00 - Ledig\n" +
@@ -72,9 +72,9 @@ public class DayBookingView extends JFrame {
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        bokaButton = new JButton("Boka");
-        seeMoreButton = new JButton("Visa bokningar");
-        backButton = new JButton("Tillbaka");
+        bokaButton = new JButton("Book");
+        seeMoreButton = new JButton("Show bookings");
+        backButton = new JButton("Return");
 
         bottomPanel.add(timeBox);
         bottomPanel.add(bokaButton);
