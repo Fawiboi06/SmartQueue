@@ -29,6 +29,7 @@ public class SmartQueueController {
     private void showLoginView() {
         loginView = new LoginView();
         loginView.getLoginButton().addActionListener(e -> login());
+        loginView.getRegisterButton().addActionListener(e -> register());
         loginView.setVisible(true);
     }
 
@@ -46,6 +47,20 @@ public class SmartQueueController {
         JOptionPane.showMessageDialog(loginView, "Login successful");
         loginView.dispose();
         showMainView();
+    }
+
+    private void register() {
+        String enteredUsername = loginView.getUsername();
+        String enteredPassword = loginView.getPassword();
+        String selectedRole = loginView.getSelectedRole();
+
+        if (enteredUsername.isBlank() || enteredPassword.isBlank()) {
+            JOptionPane.showMessageDialog(loginView, "Please enter username and password.");
+            return;
+        }
+
+        JOptionPane.showMessageDialog(loginView,
+                "Registered as " + selectedRole + ": " + enteredUsername);
     }
 
     private void showMainView() {
@@ -66,6 +81,8 @@ public class SmartQueueController {
         });
 
         mainView.setVisible(true);
+        mainView.getViewBookingButton().addActionListener(e -> updateMainBookingList());
+        mainView.getDeleteBookingButton().addActionListener(e -> deleteBooking());
     }
 
     private void openDayBookingView(int day) {
@@ -81,31 +98,46 @@ public class SmartQueueController {
         dayBookingView.getBokaButton().addActionListener(e -> {
             String date = currentMonth + "-" + String.format("%02d", day);
             String time = dayBookingView.getSelectedTime();
-            addBooking(date,time);
-            JOptionPane.showMessageDialog(dayBookingView, "Booking created:" + date + "at" + time);
-            dayBookingView.resetTime();
+
+            boolean created = addBooking(date, time);
+
+            if (created) {
+                JOptionPane.showMessageDialog(dayBookingView, "Booking created: " + date + " at " + time);
+                updateMainBookingList();
+                dayBookingView.resetTime();
+            }
         });
 
         dayBookingView.getSeeMoreButton().addActionListener(e -> showBookings());
         dayBookingView.setVisible(true);
     }
 
-    private void addBooking(String date,String time) {
-        if (time == null){
-            JOptionPane.showMessageDialog(dayBookingView,"Please select a time.");
-            return;
+    private boolean addBooking(String date,String time) {
+        if (username == null || username.isBlank()) {
+            JOptionPane.showMessageDialog(dayBookingView, "Username is missing.");
+            return false;
         }
 
-        for(Booking b:bookingManager.getBookings()) {
-            if (b.getDate().equals(date) && b.getTime().equals(time)) {
-                JOptionPane.showMessageDialog(dayBookingView, "This time is already booked. Please choose another.");
-                return;
-            }
+        if (date == null || date.isBlank()) {
+            JOptionPane.showMessageDialog(dayBookingView, "Date is missing.");
+            return false;
+        }
+
+        if (time == null){
+            JOptionPane.showMessageDialog(dayBookingView,"Please select a time.");
+            return false;
         }
 
         Booking booking = new Booking(date, time, username);
-        bookingManager.addBooking(booking);
-        System.out.println("Booking added for " + date + "at" + time);
+        boolean created = bookingManager.addBooking(booking);
+
+        if(!created) {
+            JOptionPane.showMessageDialog(dayBookingView, "This time is already booked or the booking is invalid");
+            return false;
+        }
+
+        System.out.println("Booking added for " + date + " at " + time);
+        return true;
     }
 
     private void showBookings() {
@@ -138,5 +170,44 @@ public class SmartQueueController {
 
         JOptionPane.showMessageDialog(dayBookingView, builder.toString(), "Bookings",
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void updateMainBookingList() {
+        if (bookingManager.isEmpty()) {
+            mainView.updateBookingList("No bookings yet.");
+            return;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        for (Booking booking : bookingManager.getBookings()) {
+            builder.append("Name: ")
+                    .append(booking.getUsername())
+                    .append(" | Date: ")
+                    .append(booking.getDate())
+                    .append(" | Time: ")
+                    .append(booking.getTime())
+                    .append("\n");
+        }
+
+        mainView.updateBookingList(builder.toString());
+    }
+
+    private void deleteBooking() {
+        if (bookingManager.isEmpty()) {
+            JOptionPane.showMessageDialog(mainView, "No bookings to delete.");
+            return;
+        }
+
+        Booking bookingToDelete = bookingManager.getBookings().get(0);
+
+        boolean deleted = bookingManager.removeBooking(bookingToDelete);
+
+        if (deleted) {
+            JOptionPane.showMessageDialog(mainView, "Booking deleted.");
+            updateMainBookingList();
+        } else {
+            JOptionPane.showMessageDialog(mainView, "Could not delete booking.");
+        }
     }
 }

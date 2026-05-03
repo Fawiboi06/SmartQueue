@@ -11,7 +11,9 @@ public class DayBookingView extends JFrame {
     private JComboBox<String>timeBox;
 
     public DayBookingView(int day){
-        setTitle("Bookings for day " + day);
+
+        setTitle("Bookings for choosen day " + day);
+
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
