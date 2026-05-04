@@ -134,6 +134,10 @@ public class SmartQueueController {
             JOptionPane.showMessageDialog(dayBookingView,"Please select a time.");
             return false;
         }
+        if (time == null || time.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(dayBookingView, "Please select a time.");
+            return false;
+        }
 
         Booking booking = new Booking(date, time, username);
         boolean created = bookingManager.addBooking(booking);
