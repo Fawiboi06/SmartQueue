@@ -1,4 +1,5 @@
 package model;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -14,8 +15,28 @@ public class QueueManager {
             return false;
         }
 
-        queue.add(new QueueItem(name.trim()));
+        String cleanName = name.trim();
+
+        if (cleanName.length() < 2) {
+            return false;
+        }
+
+        if (customerAlreadyWaiting(cleanName)) {
+            return false;
+        }
+
+        queue.add(new QueueItem(cleanName));
         return true;
+    }
+
+    public boolean customerAlreadyWaiting(String name) {
+        for (QueueItem item : queue) {
+            if (item.getCustomerName().equalsIgnoreCase(name.trim())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public QueueItem completeNextCustomer() {
@@ -24,6 +45,20 @@ public class QueueManager {
         }
 
         return queue.poll();
+    }
+
+    public int getQueueSize() {
+        return queue.size();
+    }
+
+    public String getNextCustomerName() {
+        QueueItem next = queue.peek();
+
+        if (next == null) {
+            return "No customer waiting";
+        }
+
+        return next.getCustomerName();
     }
 
     public boolean isEmpty() {
@@ -38,6 +73,8 @@ public class QueueManager {
         StringBuilder builder = new StringBuilder();
         int position = 1;
 
+        builder.append("Current queue:\n");
+
         for (QueueItem item : queue) {
             builder.append(position)
                     .append(". ")
@@ -45,6 +82,11 @@ public class QueueManager {
                     .append("\n");
             position++;
         }
+
+        builder.append("\nNext customer: ")
+                .append(getNextCustomerName())
+                .append("\nWaiting customers: ")
+                .append(getQueueSize());
 
         return builder.toString();
     }
