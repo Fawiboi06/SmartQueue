@@ -127,6 +127,10 @@ public class GUImainBody extends JFrame {
         addQueueButton = new JButton("Add to queue");
         addQueueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Initialize the previously null button to avoid NPE
+        completeQueueButton = new JButton("Complete");
+        completeQueueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         queueArea = new JTextArea("Queue is empty");
         queueArea.setEditable(false);
         queueArea.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -223,4 +227,3 @@ public class GUImainBody extends JFrame {
         return completeQueueButton;
     }
 }
-
