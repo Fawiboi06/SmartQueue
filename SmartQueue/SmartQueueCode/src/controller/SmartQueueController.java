@@ -6,6 +6,8 @@ import View.LoginView;
 import model.Booking;
 import model.BookingManager;
 import java.time.YearMonth;
+import model.QueueManager;
+import model.QueueItem;
 
 import javax.swing.*;
 
@@ -18,11 +20,13 @@ public class SmartQueueController {
 
     private final BookingManager bookingManager;
     private final YearMonth currentMonth = YearMonth.now();
+    private final QueueManager queueManager;
     private String username;
 
 
     public SmartQueueController() {
         bookingManager = new BookingManager();
+        queueManager = new QueueManager();
         showLoginView();
     }
 
@@ -73,6 +77,9 @@ public class SmartQueueController {
                 openDayBookingView(selectedDay);
             });
         }
+
+        mainView.getAddQueueButton().addActionListener(e -> addToQueue());
+        mainView.getCompleteQueueButton().addActionListener(e -> completeQueueItem());
 
         mainView.getCloseButton().addActionListener(e -> System.exit(0));
         mainView.getBackButton().addActionListener(e -> {
@@ -209,5 +216,37 @@ public class SmartQueueController {
         } else {
             JOptionPane.showMessageDialog(mainView, "Could not delete booking.");
         }
+    }
+
+    private void addToQueue() {
+        String name = mainView.getQueueName();
+
+        boolean added = queueManager.addCustomer(name);
+
+        if (!added) {
+            JOptionPane.showMessageDialog(mainView, "Please enter a customer name.");
+            return;
+        }
+
+        mainView.clearQueueName();
+        updateQueueView();
+
+        JOptionPane.showMessageDialog(mainView, "Customer added to queue.");
+    }
+
+    private void completeQueueItem(){
+        QueueItem completedCustomer = queueManager.completeNextCustomer();
+
+        if(completedCustomer == null){
+            JOptionPane.showMessageDialog(mainView, "Queue is already empty.");
+            return;
+        }
+
+        updateQueueView();
+        JOptionPane.showMessageDialog(mainView, "Completed customer: " + completedCustomer.getCustomerName());
+    }
+
+    private void updateQueueView(){
+        mainView.updateQueueArea(queueManager.getQueueInfo());
     }
 }

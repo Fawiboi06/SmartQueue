@@ -8,6 +8,10 @@ import java.util.List;
 
 public class GUImainBody extends JFrame {
 
+    private JTextField queueNameField;
+    private JTextArea queueArea;
+    private JButton addQueueButton;
+    private JButton completeQueueButton;
     private JLabel monthLabel;
     private JButton previousButton;
     private JButton nextButton;
@@ -113,6 +117,35 @@ public class GUImainBody extends JFrame {
         infoPanel.add(Box.createVerticalStrut(10));
         infoPanel.add(deleteBookingButton);
 
+        JPanel queuePanel = new JPanel();
+        queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
+        queuePanel.setBorder(BorderFactory.createTitledBorder("Queue"));
+
+        queueNameField = new JTextField();
+        queueNameField.setMaximumSize(new Dimension(250, 30));
+
+        addQueueButton = new JButton("Add to queue");
+        addQueueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        queueArea = new JTextArea("Queue is empty");
+        queueArea.setEditable(false);
+        queueArea.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JScrollPane queueScrollPane = new JScrollPane(queueArea);
+        queueScrollPane.setPreferredSize(new Dimension(250, 150));
+
+        queuePanel.add(new JLabel("Customer name"));
+        queuePanel.add(queueNameField);
+        queuePanel.add(Box.createVerticalStrut(10));
+        queuePanel.add(addQueueButton);
+        queuePanel.add(Box.createVerticalStrut(10));
+        queuePanel.add(completeQueueButton);
+        queuePanel.add(Box.createVerticalStrut(10));
+        queuePanel.add(queueScrollPane);
+
+        infoPanel.add(Box.createVerticalStrut(20));
+        infoPanel.add(queuePanel);
+
         centerPanel.add(calendarPanel, BorderLayout.CENTER);
         centerPanel.add(infoPanel, BorderLayout.EAST);
 
@@ -168,6 +201,26 @@ public class GUImainBody extends JFrame {
 
     public JButton getDeleteBookingButton() {
         return deleteBookingButton;
+    }
+
+    public String getQueueName(){
+        return queueNameField.getText();
+    }
+
+    public void clearQueueName(){
+        queueNameField.setText("");
+    }
+
+    public void updateQueueArea(String text){
+        queueArea.setText(text);
+    }
+
+    public JButton getAddQueueButton(){
+        return addQueueButton;
+    }
+
+    public JButton getCompleteQueueButton() {
+        return completeQueueButton;
     }
 }
 
