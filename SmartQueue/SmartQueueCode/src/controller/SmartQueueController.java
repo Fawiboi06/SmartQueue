@@ -19,7 +19,7 @@ public class SmartQueueController {
     private String selectedDate;
 
     private final BookingManager bookingManager;
-    private final YearMonth currentMonth = YearMonth.now();
+    private YearMonth currentMonth = YearMonth.now();
     private final QueueManager queueManager;
     private String username;
 
@@ -90,6 +90,18 @@ public class SmartQueueController {
         mainView.setVisible(true);
         mainView.getViewBookingButton().addActionListener(e -> updateMainBookingList());
         mainView.getDeleteBookingButton().addActionListener(e -> deleteBooking());
+
+        mainView.updateMonth(currentMonth);
+
+        mainView.getPreviousButton().addActionListener(e -> {
+            currentMonth = currentMonth.minusMonths(1);
+            mainView.updateMonth(currentMonth);
+        });
+
+        mainView.getNextButton().addActionListener(e -> {
+            currentMonth = currentMonth.plusMonths(1);
+            mainView.updateMonth(currentMonth);
+        });
     }
 
     private void openDayBookingView(int day) {
