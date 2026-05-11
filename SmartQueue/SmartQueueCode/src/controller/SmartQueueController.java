@@ -184,41 +184,82 @@ public class SmartQueueController {
     }
 
     private void updateMainBookingList() {
+
         if (bookingManager.isEmpty()) {
             mainView.updateBookingList("No bookings yet.");
             return;
         }
 
         StringBuilder builder = new StringBuilder();
+        int index = 1;
 
         for (Booking booking : bookingManager.getBookings()) {
-            builder.append("Name: ")
-                    .append(booking.getUsername())
+
+            if (!booking.getUsername().equals(username)) {
+                continue;
+            }
+
+            builder.append(index)
+                    .append(". Time: ")
+                    .append(booking.getTime())
                     .append(" | Date: ")
                     .append(booking.getDate())
-                    .append(" | Time: ")
-                    .append(booking.getTime())
                     .append("\n");
+
+            index++;
+        }
+
+        if (builder.length() == 0) {
+            mainView.updateBookingList("You have no bookings.");
+            return;
         }
 
         mainView.updateBookingList(builder.toString());
     }
 
     private void deleteBooking() {
+
         if (bookingManager.isEmpty()) {
             JOptionPane.showMessageDialog(mainView, "No bookings to delete.");
             return;
         }
 
-        Booking bookingToDelete = bookingManager.getBookings().get(0);
+        String input = JOptionPane.showInputDialog(
+                mainView,
+                "Enter booking number to delete:"
+        );
 
-        boolean deleted = bookingManager.removeBooking(bookingToDelete);
+        if (input == null || input.isBlank()) {
+            return;
+        }
 
-        if (deleted) {
-            JOptionPane.showMessageDialog(mainView, "Booking deleted.");
-            updateMainBookingList();
-        } else {
-            JOptionPane.showMessageDialog(mainView, "Could not delete booking.");
+        try {
+            int number = Integer.parseInt(input);
+
+            Booking bookingToDelete = bookingManager.getBookingByNumber(number);
+
+            if (bookingToDelete == null) {
+                JOptionPane.showMessageDialog(mainView, "Invalid number.");
+                return;
+            }
+
+            if (!bookingToDelete.getUsername().equals(username)) {
+                JOptionPane.showMessageDialog(mainView,
+                        "You can only delete your own bookings.");
+                return;
+            }
+
+            boolean deleted = bookingManager.removeBooking(bookingToDelete);
+
+            if (deleted) {
+                JOptionPane.showMessageDialog(mainView, "Booking deleted.");
+                updateMainBookingList();
+            } else {
+                JOptionPane.showMessageDialog(mainView, "Could not delete booking.");
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(mainView, "Please enter a valid number.");
         }
     }
 
