@@ -108,6 +108,8 @@ public class SmartQueueController {
         selectedDate = currentMonth + "-" + String.format("%02d", day);
         mainView.setVisible(false);
         dayBookingView = new DayBookingView(day);
+        dayBookingView.updateTimes(bookingManager.getBookingsForDate(selectedDate));
+        dayBookingView.updateAvailableTimes(bookingManager.getBookingsForDate(selectedDate));
 
         dayBookingView.getBackButton().addActionListener(e -> {
             dayBookingView.dispose();
@@ -123,7 +125,8 @@ public class SmartQueueController {
             if (created) {
                 JOptionPane.showMessageDialog(dayBookingView, "Booking created: " + date + " at " + time);
                 updateMainBookingList();
-                dayBookingView.resetTime();
+                dayBookingView.updateTimes(bookingManager.getBookingsForDate(selectedDate));
+                dayBookingView.updateAvailableTimes(bookingManager.getBookingsForDate(selectedDate));
             }
         });
 
@@ -150,8 +153,25 @@ public class SmartQueueController {
         Booking booking = new Booking(date, time, username);
         boolean created = bookingManager.addBooking(booking);
 
-        if(!created) {
-            JOptionPane.showMessageDialog(dayBookingView, "This time is already booked or the booking is invalid");
+        if (!created) {
+            int choice = JOptionPane.showConfirmDialog(
+                    dayBookingView,
+                    "This time is already booked. Do you want to join the queue instead?",
+                    "Join queue",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (choice == JOptionPane.YES_OPTION) {
+                boolean addedToQueue = queueManager.addCustomer(username);
+
+                if (addedToQueue) {
+                    updateQueueView();
+                    JOptionPane.showMessageDialog(dayBookingView, "You have been added to the queue.");
+                } else {
+                    JOptionPane.showMessageDialog(dayBookingView, "Could not add you to the queue.");
+                }
+            }
+
             return false;
         }
 

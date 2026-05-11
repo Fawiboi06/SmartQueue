@@ -1,4 +1,6 @@
 package View;
+import model.Booking;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -110,6 +112,25 @@ public class DayBookingView extends JFrame {
         }
 
         bookingArea.setText(builder.toString());
+    }
+
+    public void updateAvailableTimes(java.util.List<model.Booking> bookings){
+        timeBox.removeAllItems();
+
+        for(String time : TIMES) {
+            boolean isBooked = false;
+
+            for(model.Booking booking : bookings){
+                if(booking.getTime().equals(time)){
+                    isBooked = true;
+                    break;
+                }
+            }
+
+            if(!isBooked){
+                timeBox.addItem(time);
+            }
+        }
     }
 
     public JButton getBokaButton() {
