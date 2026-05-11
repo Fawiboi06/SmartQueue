@@ -9,6 +9,7 @@ public class DayBookingView extends JFrame {
     private JButton seeMoreButton;
     private JButton backButton;
     private JComboBox<String>timeBox;
+    private JTextArea bookingArea;
 
     public DayBookingView(int day){
         setTitle("Bookings for choosen day " + day);
@@ -28,7 +29,7 @@ public class DayBookingView extends JFrame {
         JPanel bookingPanel = new JPanel(new BorderLayout(10, 10));
         bookingPanel.setBorder(BorderFactory.createTitledBorder("Bookings"));
 
-        JTextArea bookingArea = new JTextArea(
+        bookingArea = new JTextArea(
                 "08:00 - Ledig\n" +
                         "09:00 - Ledig\n" +
                         "10:00 - Bokad\n" +
@@ -84,6 +85,31 @@ public class DayBookingView extends JFrame {
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         setContentPane(mainPanel);
+    }
+
+    public void updateTimes(java.util.List<model.Booking> bookings) {
+        String[] times = {"08:00", "09:00", "10:00", "11:00", "12:00"};
+
+        StringBuilder builder = new StringBuilder();
+
+        for (String time : times) {
+            boolean isBooked = false;
+
+            for (model.Booking b : bookings) {
+                if (b.getTime().equals(time)) {
+                    isBooked = true;
+                    break;
+                }
+            }
+
+            if (isBooked) {
+                builder.append(time).append(" - Bokad\n");
+            } else {
+                builder.append(time).append(" - Ledig\n");
+            }
+        }
+
+        bookingArea.setText(builder.toString());
     }
 
     public JButton getBokaButton() {
