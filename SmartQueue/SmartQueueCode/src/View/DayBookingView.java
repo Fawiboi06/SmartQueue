@@ -15,7 +15,7 @@ public class DayBookingView extends JFrame {
     };
 
     public DayBookingView(int day){
-        setTitle("Bookings for choosen day " + day);
+        setTitle("Bookings for selected day " + day);
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
