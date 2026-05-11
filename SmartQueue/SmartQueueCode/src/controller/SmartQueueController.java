@@ -130,11 +130,7 @@ public class SmartQueueController {
             return false;
         }
 
-        if (time == null){
-            JOptionPane.showMessageDialog(dayBookingView,"Please select a time.");
-            return false;
-        }
-        if (time == null || time.trim().isEmpty()) {
+        if (time == null || time.isBlank()) {
             JOptionPane.showMessageDialog(dayBookingView, "Please select a time.");
             return false;
         }

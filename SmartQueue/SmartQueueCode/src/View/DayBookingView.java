@@ -10,6 +10,9 @@ public class DayBookingView extends JFrame {
     private JButton backButton;
     private JComboBox<String>timeBox;
     private JTextArea bookingArea;
+    private static final String[] TIMES = {
+            "08:00", "09:00", "10:00", "11:00", "12:00"
+    };
 
     public DayBookingView(int day){
         setTitle("Bookings for choosen day " + day);
@@ -63,13 +66,7 @@ public class DayBookingView extends JFrame {
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
-        timeBox=new JComboBox<>(new String[]{
-            "8:00",
-            "9:00",
-            "10:00",
-            "11:00",
-            "12:00"
-        });
+        timeBox = new JComboBox<>(TIMES);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -88,8 +85,7 @@ public class DayBookingView extends JFrame {
     }
 
     public void updateTimes(java.util.List<model.Booking> bookings) {
-        String[] times = {"08:00", "09:00", "10:00", "11:00", "12:00"};
-
+        String[] times = TIMES;
         StringBuilder builder = new StringBuilder();
 
         for (String time : times) {

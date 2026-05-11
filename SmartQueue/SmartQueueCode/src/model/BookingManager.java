@@ -33,7 +33,6 @@ public class BookingManager {
         }
 
         bookings.add(booking);
-        sortBookings();
         return true;
     }
 
@@ -108,7 +107,9 @@ public class BookingManager {
     }
 
     public List<Booking> getBookings() {
-        return new ArrayList<>(bookings);
+        List<Booking> copy = new ArrayList<>(bookings);
+        copy.sort(Comparator.comparing(b -> b.getDate() + " " + b.getTime()));
+        return copy;
     }
 
     public boolean isEmpty() {
