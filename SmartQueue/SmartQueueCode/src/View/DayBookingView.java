@@ -32,15 +32,10 @@ public class DayBookingView extends JFrame {
         JPanel bookingPanel = new JPanel(new BorderLayout(10, 10));
         bookingPanel.setBorder(BorderFactory.createTitledBorder("Bookings"));
 
-        bookingArea = new JTextArea(
-                "08:00 - Ledig\n" +
-                        "09:00 - Ledig\n" +
-                        "10:00 - Bokad\n" +
-                        "11:00 - Ledig\n" +
-                        "12:00 - Ledig"
-        );
+        bookingArea = new JTextArea();
         bookingArea.setEditable(false);
         bookingArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        updateTimes(new java.util.ArrayList<>());
 
         bookingPanel.add(new JScrollPane(bookingArea), BorderLayout.CENTER);
 
