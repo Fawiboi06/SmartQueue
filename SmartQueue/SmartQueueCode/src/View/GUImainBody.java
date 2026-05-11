@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.YearMonth;
 
 public class GUImainBody extends JFrame {
 
@@ -225,5 +226,9 @@ public class GUImainBody extends JFrame {
 
     public JButton getCompleteQueueButton() {
         return completeQueueButton;
+    }
+
+    public void updateMonth(YearMonth month) {
+        monthLabel.setText(month.getMonth() + " " + month.getYear());
     }
 }
