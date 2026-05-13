@@ -1,4 +1,5 @@
 package View;
+import java.time.YearMonth;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -23,7 +24,7 @@ public class DayBookingView extends JFrame {
             "16:00"
     };
 
-    public DayBookingView(int day){
+    public DayBookingView(int day, YearMonth month){
         setTitle("Bookings for selected day " + day);
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -32,7 +33,7 @@ public class DayBookingView extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        JLabel titleLabel = new JLabel("Choosen day: 2026-04" + String.format("%02d",day),SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Choosen day: " + month + "-" + String.format("%02d", day), SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
 

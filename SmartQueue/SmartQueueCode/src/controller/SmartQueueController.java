@@ -107,7 +107,7 @@ public class SmartQueueController {
     private void openDayBookingView(int day) {
         selectedDate = currentMonth + "-" + String.format("%02d", day);
         mainView.setVisible(false);
-        dayBookingView = new DayBookingView(day);
+        dayBookingView = new DayBookingView(day,currentMonth);
 
         dayBookingView.getBackButton().addActionListener(e -> {
             dayBookingView.dispose();
