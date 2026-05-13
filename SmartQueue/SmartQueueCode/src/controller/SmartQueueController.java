@@ -108,6 +108,7 @@ public class SmartQueueController {
         selectedDate = currentMonth + "-" + String.format("%02d", day);
         mainView.setVisible(false);
         dayBookingView = new DayBookingView(day,currentMonth);
+        dayBookingView.updateTimes(bookingManager.getBookingsForDate(selectedDate));
 
         dayBookingView.getBackButton().addActionListener(e -> {
             dayBookingView.dispose();
@@ -244,16 +245,10 @@ public class SmartQueueController {
         try {
             int number = Integer.parseInt(input);
 
-            Booking bookingToDelete = bookingManager.getBookingByNumber(number);
+            Booking bookingToDelete = bookingManager.getBookingByNumberForUser(number, username);
 
             if (bookingToDelete == null) {
                 JOptionPane.showMessageDialog(mainView, "Invalid number.");
-                return;
-            }
-
-            if (!bookingToDelete.getUsername().equals(username)) {
-                JOptionPane.showMessageDialog(mainView,
-                        "You can only delete your own bookings.");
                 return;
             }
 

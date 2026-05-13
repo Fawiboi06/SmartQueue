@@ -33,6 +33,7 @@ public class BookingManager {
         }
 
         bookings.add(booking);
+        sortBookings();
         return true;
     }
 
@@ -72,6 +73,22 @@ public class BookingManager {
         }
 
         return bookings.get(number - 1);
+    }
+
+    public Booking getBookingByNumberForUser(int number, String username) {
+        List<Booking> userBookings = new ArrayList<>();
+
+        for (Booking booking : getBookings()) {
+            if (booking.getUsername().equals(username)) {
+                userBookings.add(booking);
+            }
+        }
+
+        if (number < 1 || number > userBookings.size()) {
+            return null;
+        }
+
+        return userBookings.get(number - 1);
     }
 
     public int getBookingCount() {
