@@ -2,11 +2,7 @@ package model;
 
 public class AdminUser extends User {
 
-    public AdminUser(String username, String password) {
-        super(username, password, "Admin");
-    }
-
-    public void viewAllBookings () {
-        System.out.println("Admin viewing all bookings");
+    public AdminUser(String username, String password, String fullName, String phoneNumber, String email) {
+        super(username, password, "Admin", fullName, phoneNumber, email);
     }
 }
