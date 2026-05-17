@@ -1,17 +1,36 @@
 package model;
 public class QueueItem {
-    private final String customerName;
+    private final String username;
+    private final String fullName;
+    private final String phoneNumber;
+    private final String email;
 
-    public QueueItem(String customerName) {
-        this.customerName = customerName;
+
+    public QueueItem(String username, String fullName, String phoneNumber, String email) {
+        this.username = username;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getUsername() {
+        return username;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     @Override
     public String toString() {
-        return customerName;
+        return fullName + " (" + username + ")";
     }
 }

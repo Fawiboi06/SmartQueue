@@ -14,17 +14,7 @@ public class BookingManager {
     }
 
     public boolean addBooking(Booking booking) {
-        if (booking == null) {
-            return false;
-        }
-
-        if (booking.getDate() == null || booking.getDate().isBlank()
-                || booking.getTime() == null || booking.getTime().isBlank()
-                || booking.getUsername() == null || booking.getUsername().isBlank()) {
-            return false;
-        }
-
-        if (booking.getUsername().trim().length() < 2) {
+        if(!isValidBooking(booking)){
             return false;
         }
 
@@ -38,16 +28,25 @@ public class BookingManager {
     }
 
     public boolean hasBookingAt(String date, String time) {
-        for (Booking b : bookings) {
-            if (b.getDate().equals(date) && b.getTime().equals(time)) {
+        for (Booking booking : bookings) {
+            if (booking.getDate().equals(date) && booking.getTime().equals(time)) {
                 return true;
             }
         }
         return false;
     }
 
-    public ArrayList<Booking> getBookingsForDate(String date) {
-        ArrayList<Booking> result = new ArrayList<>();
+    public Booking getBookingAt(String date, String time) {
+        for (Booking booking : bookings) {
+            if (booking.getDate().equals(date) && booking.getTime().equals(time)) {
+                return booking;
+            }
+        }
+        return null;
+    }
+
+    public List<Booking> getBookingsForDate(String date) {
+        List<Booking> result = new ArrayList<>();
 
         for (Booking booking : bookings) {
             if (booking.getDate().equals(date)) {
@@ -55,64 +54,37 @@ public class BookingManager {
             }
         }
 
+        result.sort(Comparator.comparing(Booking::getTime));
         return result;
     }
 
-    public boolean removeBookingByNumber(int number) {
-        if (number < 1 || number > bookings.size()) {
-            return false;
+    public List<Booking> getBookingsForUser(String username){
+        List<Booking> result = new ArrayList<>();
+
+        for (Booking booking : bookings) {
+            if (booking.getUsername().equalsIgnoreCase(username)) {
+                result.add(booking);
+            }
         }
 
-        bookings.remove(number - 1);
-        return true;
-    }
-
-    public Booking getBookingByNumber(int number) {
-        if (number < 1 || number > bookings.size()) {
-            return null;
-        }
-
-        return bookings.get(number - 1);
+        result.sort(Comparator.comparing(b -> b.getDate() + " " + b.getTime()));
+        return result;
     }
 
     public Booking getBookingByNumberForUser(int number, String username) {
-        List<Booking> userBookings = new ArrayList<>();
-
-        for (Booking booking : getBookings()) {
-            if (booking.getUsername().equals(username)) {
-                userBookings.add(booking);
-            }
-        }
-
+        List<Booking> userBookings = getBookingsForUser(username);
         if (number < 1 || number > userBookings.size()) {
             return null;
         }
-
         return userBookings.get(number - 1);
     }
 
-    public int getBookingCount() {
-        return bookings.size();
-    }
-
-    private void sortBookings() {
-        Collections.sort(bookings, new Comparator<Booking>() {
-            @Override
-            public int compare(Booking b1, Booking b2) {
-                String first = b1.getDate() + " " + b1.getTime();
-                String second = b2.getDate() + " " + b2.getTime();
-                return first.compareTo(second);
-            }
-        });
-    }
-
-    public boolean removeFirstBooking() {
-        if (bookings.isEmpty()) {
-            return false;
+    public Booking getBookingByNumberForAdmin(int number) {
+        List<Booking> allBookings = getBookings();
+        if (number < 1 || number > allBookings.size()) {
+            return null;
         }
-
-        bookings.remove(0);
-        return true;
+        return allBookings.get(number - 1);
     }
 
     public boolean removeBooking(Booking booking) {
@@ -132,4 +104,32 @@ public class BookingManager {
     public boolean isEmpty() {
         return bookings.isEmpty();
     }
+
+    private boolean isValidBooking(Booking booking) {
+        if (booking == null) {
+            return false;
+        }
+
+        if (isBlank(booking.getDate()) ||
+                isBlank(booking.getTime()) ||
+                isBlank(booking.getUsername()) ||
+                isBlank(booking.getFullName())) {
+            return false;
+        }
+
+        return booking.getUsername().trim().length() >= 2;
+    }
+
+    private void sortBookings() {
+        bookings.sort(Comparator.comparing(b -> b.getDate() + " " + b.getTime()));
+    }
+
+    private boolean isBlank(String text) {
+        return text == null || text.isBlank();
+    }
 }
+
+
+
+
+
