@@ -1,4 +1,6 @@
 package View;
+import model.Booking;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -9,9 +11,22 @@ public class DayBookingView extends JFrame {
     private JButton seeMoreButton;
     private JButton backButton;
     private JComboBox<String>timeBox;
+    private JTextArea bookingArea;
+
+    private static final String[] TIMES = {
+            "08:00", "08:30",
+            "09:00", "09:30",
+            "10:00", "10:30",
+            "11:00", "11:30",
+            "12:00", "12:30",
+            "13:00", "13:30",
+            "14:00", "14:30",
+            "15:00", "15:30",
+            "16:00"
+    };
 
     public DayBookingView(int day){
-        setTitle("Bookings for choosen day " + day);
+        setTitle("Bookings for selected day " + day);
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -28,15 +43,10 @@ public class DayBookingView extends JFrame {
         JPanel bookingPanel = new JPanel(new BorderLayout(10, 10));
         bookingPanel.setBorder(BorderFactory.createTitledBorder("Bookings"));
 
-        JTextArea bookingArea = new JTextArea(
-                "08:00 - Ledig\n" +
-                        "09:00 - Ledig\n" +
-                        "10:00 - Bokad\n" +
-                        "11:00 - Ledig\n" +
-                        "12:00 - Ledig"
-        );
+        bookingArea = new JTextArea();
         bookingArea.setEditable(false);
         bookingArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        updateTimes(new java.util.ArrayList<>());
 
         bookingPanel.add(new JScrollPane(bookingArea), BorderLayout.CENTER);
 
@@ -62,13 +72,7 @@ public class DayBookingView extends JFrame {
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
-        timeBox=new JComboBox<>(new String[]{
-            "8:00",
-            "9:00",
-            "10:00",
-            "11:00",
-            "12:00"
-        });
+        timeBox = new JComboBox<>(TIMES);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -84,6 +88,49 @@ public class DayBookingView extends JFrame {
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         setContentPane(mainPanel);
+    }
+
+    public void updateTimes(java.util.List<model.Booking> bookings) {
+        String[] times = TIMES;
+        StringBuilder builder = new StringBuilder();
+
+        for (String time : times) {
+            boolean isBooked = false;
+
+            for (model.Booking b : bookings) {
+                if (b.getTime().equals(time)) {
+                    isBooked = true;
+                    break;
+                }
+            }
+
+            if (isBooked) {
+                builder.append(time).append(" - Bokad\n");
+            } else {
+                builder.append(time).append(" - Ledig\n");
+            }
+        }
+
+        bookingArea.setText(builder.toString());
+    }
+
+    public void updateAvailableTimes(java.util.List<model.Booking> bookings){
+        timeBox.removeAllItems();
+
+        for(String time : TIMES) {
+            boolean isBooked = false;
+
+            for(model.Booking booking : bookings){
+                if(booking.getTime().equals(time)){
+                    isBooked = true;
+                    break;
+                }
+            }
+
+            if(!isBooked){
+                timeBox.addItem(time);
+            }
+        }
     }
 
     public JButton getBokaButton() {

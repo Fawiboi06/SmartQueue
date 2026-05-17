@@ -26,7 +26,7 @@ public class Booking {
     }
 
     @Override
-    public String toString(){
-        return date + "at" + time + " - " + username;
+    public String toString() {
+        return "Name: " + username + " | Date: " + date + " | Time: " + time;
     }
 }

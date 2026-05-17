@@ -75,6 +75,22 @@ public class BookingManager {
         return bookings.get(number - 1);
     }
 
+    public Booking getBookingByNumberForUser(int number, String username) {
+        List<Booking> userBookings = new ArrayList<>();
+
+        for (Booking booking : getBookings()) {
+            if (booking.getUsername().equals(username)) {
+                userBookings.add(booking);
+            }
+        }
+
+        if (number < 1 || number > userBookings.size()) {
+            return null;
+        }
+
+        return userBookings.get(number - 1);
+    }
+
     public int getBookingCount() {
         return bookings.size();
     }
@@ -108,7 +124,9 @@ public class BookingManager {
     }
 
     public List<Booking> getBookings() {
-        return new ArrayList<>(bookings);
+        List<Booking> copy = new ArrayList<>(bookings);
+        copy.sort(Comparator.comparing(b -> b.getDate() + " " + b.getTime()));
+        return copy;
     }
 
     public boolean isEmpty() {
