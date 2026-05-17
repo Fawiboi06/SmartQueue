@@ -1,17 +1,22 @@
 package View;
+
 import model.Booking;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.time.YearMonth;
+import java.util.List;
 
 public class DayBookingView extends JFrame {
 
-    private JButton bokaButton;
-    private JButton seeMoreButton;
+    private JButton bookButton;
+    private JButton showBookingsButton;
+    private JButton showQueueButton;
     private JButton backButton;
-    private JComboBox<String>timeBox;
-    private JTextArea bookingArea;
+
+    private JList<String> timeList;
+    private DefaultListModel<String> timeListModel;
 
     private static final String[] TIMES = {
             "08:00", "08:30",
@@ -25,41 +30,48 @@ public class DayBookingView extends JFrame {
             "16:00"
     };
 
-    public DayBookingView(int day){
+    public DayBookingView(int day, YearMonth month) {
         setTitle("Bookings for selected day " + day);
-        setSize(700, 500);
+        setSize(750, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        JLabel titleLabel = new JLabel("Choosen day: 2026-04" + String.format("%02d",day),SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel(
+                "Chosen day: " + month + "-" + String.format("%02d", day),
+                SwingConstants.CENTER
+        );
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new GridLayout(1, 2, 15, 15));
 
+        // Vänster panel - klickbara tider
         JPanel bookingPanel = new JPanel(new BorderLayout(10, 10));
-        bookingPanel.setBorder(BorderFactory.createTitledBorder("Bookings"));
+        bookingPanel.setBorder(BorderFactory.createTitledBorder("Times"));
 
-        bookingArea = new JTextArea();
-        bookingArea.setEditable(false);
-        bookingArea.setFont(new Font("Arial", Font.PLAIN, 14));
-        updateTimes(new java.util.ArrayList<>());
+        timeListModel = new DefaultListModel<>();
+        timeList = new JList<>(timeListModel);
+        timeList.setFont(new Font("Arial", Font.PLAIN, 20));
+        timeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        bookingPanel.add(new JScrollPane(bookingArea), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(timeList);
+        bookingPanel.add(scrollPane, BorderLayout.CENTER);
 
+        // Höger panel - info
         JPanel infoPanel = new JPanel(new BorderLayout(10, 10));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Info"));
 
         JTextArea infoArea = new JTextArea(
-
-                        "- info\n" +
-                        "- bokningar\n" +
-                        "- tider\n" +
-                        "- Info"
+                "How it works:\n" +
+                        "- Click on a time in the left panel.\n" +
+                        "- If the time is free, a booking is created.\n" +
+                        "- If the time is booked, you are placed in queue.\n" +
+                        "- If the booked customer cancels, the next customer gets the time."
         );
+
         infoArea.setEditable(false);
         infoArea.setFont(new Font("Arial", Font.PLAIN, 14));
         infoArea.setLineWrap(true);
@@ -72,17 +84,16 @@ public class DayBookingView extends JFrame {
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
-        timeBox = new JComboBox<>(TIMES);
-
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        bokaButton = new JButton("Book");
-        seeMoreButton = new JButton("Show bookings");
+        bookButton = new JButton("Book / Join queue");
+        showBookingsButton = new JButton("Show bookings");
+        showQueueButton = new JButton("Show queue");
         backButton = new JButton("Return");
 
-        bottomPanel.add(timeBox);
-        bottomPanel.add(bokaButton);
-        bottomPanel.add(seeMoreButton);
+        bottomPanel.add(bookButton);
+        bottomPanel.add(showBookingsButton);
+        bottomPanel.add(showQueueButton);
         bottomPanel.add(backButton);
 
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
@@ -90,65 +101,55 @@ public class DayBookingView extends JFrame {
         setContentPane(mainPanel);
     }
 
-    public void updateTimes(java.util.List<model.Booking> bookings) {
-        String[] times = TIMES;
-        StringBuilder builder = new StringBuilder();
+    public void updateTimes(List<Booking> bookings) {
+        timeListModel.clear();
 
-        for (String time : times) {
-            boolean isBooked = false;
+        for (String time : TIMES) {
+            Booking booked = null;
 
-            for (model.Booking b : bookings) {
-                if (b.getTime().equals(time)) {
-                    isBooked = true;
+            for (Booking booking : bookings) {
+                if (booking.getTime().equals(time)) {
+                    booked = booking;
                     break;
                 }
             }
 
-            if (isBooked) {
-                builder.append(time).append(" - Bokad\n");
+            if (booked == null) {
+                timeListModel.addElement(time + " - Available");
             } else {
-                builder.append(time).append(" - Ledig\n");
-            }
-        }
-
-        bookingArea.setText(builder.toString());
-    }
-
-    public void updateAvailableTimes(java.util.List<model.Booking> bookings){
-        timeBox.removeAllItems();
-
-        for(String time : TIMES) {
-            boolean isBooked = false;
-
-            for(model.Booking booking : bookings){
-                if(booking.getTime().equals(time)){
-                    isBooked = true;
-                    break;
-                }
-            }
-
-            if(!isBooked){
-                timeBox.addItem(time);
+                timeListModel.addElement(time + " - Booked by " + booked.getFullName());
             }
         }
     }
 
-    public JButton getBokaButton() {
-        return bokaButton;
+    public JButton getBookButton() {
+        return bookButton;
     }
 
-    public JButton getSeeMoreButton() {
-        return seeMoreButton;
+    public JButton getShowBookingsButton() {
+        return showBookingsButton;
+    }
+
+    public JButton getShowQueueButton() {
+        return showQueueButton;
     }
 
     public JButton getBackButton() {
         return backButton;
     }
 
-    public String getSelectedTime(){
-        return(String) timeBox.getSelectedItem();
+    public String getSelectedTime() {
+        String selectedValue = timeList.getSelectedValue();
+
+        if (selectedValue == null || selectedValue.isBlank()) {
+            return null;
+        }
+
+        // Tar bara själva tiden före " - "
+        return selectedValue.split(" - ")[0];
     }
-    public void resetTime(){
-        timeBox.setSelectedIndex(0);
+
+    public void resetTime() {
+        timeList.clearSelection();
     }
 }

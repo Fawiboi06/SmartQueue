@@ -34,128 +34,84 @@ public class GUImainBody extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        JLabel titleLabel = new JLabel("Welcome to SmartQueue - " + username + " (" + role + ")");
+        JLabel titleLabel = new JLabel("Welcome to SmartQueue - " + username + " (" + role + ")", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new BorderLayout(15, 15));
 
         JPanel calendarPanel = new JPanel(new BorderLayout(10, 10));
-        calendarPanel.setBorder(BorderFactory.createTitledBorder("Kalender"));
+        calendarPanel.setBorder(BorderFactory.createTitledBorder("Calendar"));
 
-        JPanel topCalenderPanel = new JPanel(new BorderLayout(10, 0));
+        JPanel topCalendarPanel = new JPanel(new BorderLayout(10, 0));
+
         previousButton = new JButton("<");
-        monthLabel = new JLabel("April 2026", SwingConstants.CENTER);
+        monthLabel = new JLabel("", SwingConstants.CENTER);
         monthLabel.setFont(new Font("Arial", Font.BOLD, 18));
         nextButton = new JButton(">");
 
-        topCalenderPanel.add(previousButton, BorderLayout.WEST);
-        topCalenderPanel.add(monthLabel, BorderLayout.CENTER);
-        topCalenderPanel.add(nextButton, BorderLayout.EAST);
+        topCalendarPanel.add(previousButton, BorderLayout.WEST);
+        topCalendarPanel.add(monthLabel, BorderLayout.CENTER);
+        topCalendarPanel.add(nextButton, BorderLayout.EAST);
 
-        calendarPanel.add(topCalenderPanel, BorderLayout.NORTH);
+        calendarPanel.add(topCalendarPanel, BorderLayout.NORTH);
 
-        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 8, 8));
-
-        String[] daysName = {"mån", "tis", "ons", "tors", "fre", "lör", "sön"};
-        for (String dayName : daysName) {
-            JLabel dayLabel = new JLabel(dayName, SwingConstants.CENTER);
-            dayLabel.setFont(new Font("Arial", Font.BOLD, 14));
-            daysPanel.add(dayLabel);
-        }
-        for (int i = 1; i <= 30; i++) {
-            JButton dayButton = new JButton(String.valueOf(i));
-            dayButtons.add(dayButton);
-            daysPanel.add(dayButton);
-        }
-        for (int i = 0; i < 5; i++) {
-            JLabel emptyLabel = new JLabel("");
-            daysPanel.add(emptyLabel);
-        }
-
+        daysPanel = new JPanel(new GridLayout(0, 7, 8, 8));
         calendarPanel.add(daysPanel, BorderLayout.CENTER);
 
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBorder(BorderFactory.createTitledBorder("Valt datum"));
+        JPanel sidePanel = new JPanel();
+        sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
+        sidePanel.setBorder(BorderFactory.createTitledBorder("Information"));
 
-        JLabel selectedDateLabel = new JLabel("Date: --/--/----");
-        selectedDateLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        selectedDateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bookingArea = new JTextArea("No bookings shown.");
+        bookingArea.setEditable(false);
+        bookingArea.setLineWrap(true);
+        bookingArea.setWrapStyleWord(true);
+        bookingArea.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        JLabel bookingInfoLabel = new JLabel("Bokning: Ingen vald");
-        bookingInfoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        bookingInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JScrollPane bookingScrollPane = new JScrollPane(bookingArea);
+        bookingScrollPane.setPreferredSize(new Dimension(300, 230));
 
-        infoArea = new JTextArea("No bookings yet.");
-        infoArea.setEditable(false);
-        infoArea.setLineWrap(true);
-        infoArea.setWrapStyleWord(true);
-        infoArea.setFont(new Font("Arial", Font.PLAIN, 14));
-
-        JScrollPane scrollPane = new JScrollPane(infoArea);
-        scrollPane.setPreferredSize(new Dimension(250, 200));
-
-        bookingButton = new JButton("Boka tid");
-        bookingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        viewBookingButton = new JButton("See bookings");
+        viewBookingButton = new JButton("Show bookings");
         viewBookingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         deleteBookingButton = new JButton("Delete booking");
         deleteBookingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        infoPanel.add(Box.createVerticalStrut(15));
-        infoPanel.add(selectedDateLabel);
-        infoPanel.add(Box.createVerticalStrut(15));
-        infoPanel.add(bookingInfoLabel);
-        infoPanel.add(Box.createVerticalStrut(20));
-        infoPanel.add(scrollPane);
-        infoPanel.add(Box.createVerticalStrut(20));
-        infoPanel.add(bookingButton);
-        infoPanel.add(Box.createVerticalStrut(10));
-        infoPanel.add(viewBookingButton);
-        infoPanel.add(Box.createVerticalStrut(10));
-        infoPanel.add(deleteBookingButton);
+        showPersonInfoButton = new JButton("Show person info");
+        showPersonInfoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel queuePanel = new JPanel();
-        queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
-        queuePanel.setBorder(BorderFactory.createTitledBorder("Queue"));
+        showQueuesButton = new JButton("Show waiting queues");
+        showQueuesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        queueNameField = new JTextField();
-        queueNameField.setMaximumSize(new Dimension(250, 30));
-
-        addQueueButton = new JButton("Add to queue");
-        addQueueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Initialize the previously null button to avoid NPE
-        completeQueueButton = new JButton("Complete");
-        completeQueueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        queueArea = new JTextArea("Queue is empty");
+        queueArea = new JTextArea("No waiting queues shown.");
         queueArea.setEditable(false);
+        queueArea.setLineWrap(true);
+        queueArea.setWrapStyleWord(true);
         queueArea.setFont(new Font("Arial", Font.PLAIN, 14));
 
         JScrollPane queueScrollPane = new JScrollPane(queueArea);
-        queueScrollPane.setPreferredSize(new Dimension(250, 150));
+        queueScrollPane.setPreferredSize(new Dimension(300, 170));
 
-        queuePanel.add(new JLabel("Customer name"));
-        queuePanel.add(queueNameField);
-        queuePanel.add(Box.createVerticalStrut(10));
-        queuePanel.add(addQueueButton);
-        queuePanel.add(Box.createVerticalStrut(10));
-        queuePanel.add(completeQueueButton);
-        queuePanel.add(Box.createVerticalStrut(10));
-        queuePanel.add(queueScrollPane);
-
-        infoPanel.add(Box.createVerticalStrut(20));
-        infoPanel.add(queuePanel);
+        sidePanel.add(bookingScrollPane);
+        sidePanel.add(Box.createVerticalStrut(10));
+        sidePanel.add(viewBookingButton);
+        sidePanel.add(Box.createVerticalStrut(10));
+        sidePanel.add(deleteBookingButton);
+        sidePanel.add(Box.createVerticalStrut(20));
+        sidePanel.add(showPersonInfoButton);
+        sidePanel.add(Box.createVerticalStrut(10));
+        sidePanel.add(showQueuesButton);
+        sidePanel.add(Box.createVerticalStrut(10));
+        sidePanel.add(queueScrollPane);
 
         centerPanel.add(calendarPanel, BorderLayout.CENTER);
-        centerPanel.add(infoPanel, BorderLayout.EAST);
+        centerPanel.add(sidePanel, BorderLayout.EAST);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
         backButton = new JButton("Return");
         closeButton = new JButton("Close");
 
@@ -167,24 +123,41 @@ public class GUImainBody extends JFrame {
         setContentPane(mainPanel);
     }
 
+    public void updateMonth(YearMonth month) {
+        monthLabel.setText(month.getMonth() + " " + month.getYear());
+        rebuildCalendar(month);
+    }
+
+    private void rebuildCalendar(YearMonth month) {
+        daysPanel.removeAll();
+        dayButtons.clear();
+
+        String[] dayNames = {"mån", "tis", "ons", "tors", "fre", "lör", "sön"};
+
+        for (String dayName : dayNames) {
+            JLabel dayLabel = new JLabel(dayName, SwingConstants.CENTER);
+            dayLabel.setFont(new Font("Arial", Font.BOLD, 14));
+            daysPanel.add(dayLabel);
+        }
+
+        int firstDayColumn = month.atDay(1).getDayOfWeek().getValue();
+
+        for (int i = 1; i < firstDayColumn; i++) {
+            daysPanel.add(new JLabel(""));
+        }
+
+        for (int day = 1; day <= month.lengthOfMonth(); day++) {
+            JButton dayButton = new JButton(String.valueOf(day));
+            dayButtons.add(dayButton);
+            daysPanel.add(dayButton);
+        }
+
+        daysPanel.revalidate();
+        daysPanel.repaint();
+    }
+
     public List<JButton> getDayButtons() {
         return dayButtons;
-    }
-
-    public JButton getBackButton() {
-        return backButton;
-    }
-
-    public JButton getCloseButton() {
-        return closeButton;
-    }
-
-    public JButton getBookingButton() {
-        return bookingButton;
-    }
-
-    public JButton getViewBookingButton() {
-        return viewBookingButton;
     }
 
     public JButton getPreviousButton() {
@@ -195,39 +168,39 @@ public class GUImainBody extends JFrame {
         return nextButton;
     }
 
-    public JLabel getMonthLabel() {
-        return monthLabel;
-    }
-
-    public void updateBookingList(String text) {
-        infoArea.setText(text);
+    public JButton getViewBookingButton() {
+        return viewBookingButton;
     }
 
     public JButton getDeleteBookingButton() {
         return deleteBookingButton;
     }
 
-    public String getQueueName(){
-        return queueNameField.getText();
+    public JButton getShowPersonInfoButton() {
+        return showPersonInfoButton;
     }
 
-    public void clearQueueName(){
-        queueNameField.setText("");
+    public JButton getShowQueuesButton() {
+        return showQueuesButton;
     }
 
-    public void updateQueueArea(String text){
+    public JButton getBackButton() {
+        return backButton;
+    }
+
+    public JButton getCloseButton() {
+        return closeButton;
+    }
+
+    public void updateBookingList(String text) {
+        bookingArea.setText(text);
+    }
+
+    public void updateQueueArea(String text) {
         queueArea.setText(text);
     }
 
-    public JButton getAddQueueButton(){
-        return addQueueButton;
-    }
-
-    public JButton getCompleteQueueButton() {
-        return completeQueueButton;
-    }
-
-    public void updateMonth(YearMonth month) {
-        monthLabel.setText(month.getMonth() + " " + month.getYear());
+    public void setAdminMode(boolean admin) {
+        showPersonInfoButton.setVisible(admin);
     }
 }
