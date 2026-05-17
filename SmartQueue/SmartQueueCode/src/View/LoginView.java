@@ -7,17 +7,17 @@ public class LoginView extends JFrame {
 
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JComboBox<String> roleBox;
     private JButton loginButton;
     private JButton registerButton;
 
     public LoginView() {
-        setTitle("Login / Register");
-        setSize(300, 220);
+        setTitle("Login");
+        setSize(350, 220);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         panel.add(new JLabel("Username:"));
         usernameField = new JTextField();
@@ -27,15 +27,14 @@ public class LoginView extends JFrame {
         passwordField = new JPasswordField();
         panel.add(passwordField);
 
-        panel.add(new JLabel("Choose role:"));
-        roleBox = new JComboBox<>(new String[]{"Customer", "Admin"});
-        panel.add(roleBox);
-
         loginButton = new JButton("Login");
         registerButton = new JButton("Register");
 
         panel.add(loginButton);
         panel.add(registerButton);
+
+        JLabel testLabel = new JLabel("Test: admin/admin or kund/123");
+        panel.add(testLabel);
 
         add(panel);
     }
@@ -44,12 +43,7 @@ public class LoginView extends JFrame {
         return usernameField.getText();
     }
 
-    public String getPassword() {
-        return new String(passwordField.getPassword());
-    }
-
-    public String getSelectedRole() {
-        return (String) roleBox.getSelectedItem();
+    public String getPassword() {return new String(passwordField.getPassword());
     }
 
     public JButton getLoginButton() {

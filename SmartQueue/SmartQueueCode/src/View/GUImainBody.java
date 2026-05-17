@@ -3,39 +3,38 @@ package View;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.YearMonth;
 
 public class GUImainBody extends JFrame {
 
-    private JTextField queueNameField;
+    private JTextArea bookingArea;
     private JTextArea queueArea;
-    private JButton addQueueButton;
-    private JButton completeQueueButton;
     private JLabel monthLabel;
     private JButton previousButton;
     private JButton nextButton;
-    private JButton bookingButton;
     private JButton viewBookingButton;
+    private JButton deleteBookingButton;
+    private JButton showPersonInfoButton;
+    private JButton showQueuesButton;
     private JButton backButton;
     private JButton closeButton;
-    private JTextArea infoArea;
-    private JButton deleteBookingButton;
+    private JPanel daysPanel;
     private List<JButton> dayButtons;
 
-    public GUImainBody() {
+    public GUImainBody(String username, String role) {
         dayButtons = new ArrayList<>();
 
         setTitle("SmartQueue");
-        setSize(900, 600);
+        setSize(950, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        JLabel titleLabel = new JLabel("Welcome to SmartQueue", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Welcome to SmartQueue - " + username + " (" + role + ")");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
 
