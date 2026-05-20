@@ -10,7 +10,6 @@ public class Booking {
     private final String email;
 
 
-
     public Booking(String date, String time, String username, String fullName, String phoneNumber, String email) {
         this.date = date;
         this.username = username;
@@ -36,7 +35,7 @@ public class Booking {
 
     public String getPhoneNumber() {return phoneNumber;}
 
-    public String getEmail() {return email;}
+    public String getEmail() {return email;} //Implementeras eller raderas
 
     @Override
     public String toString() {
