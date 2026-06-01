@@ -108,7 +108,10 @@ public class WaitingQueueManager {
                     .append(")");
 
             if (admin) {
-                builder.append(" | Phone: ").append(item.getPhoneNumber());
+                builder.append(" | Phone: ")
+                        .append(item.getPhoneNumber())
+                        .append(" | Email: ")
+                        .append(item.getEmail());
             }
 
             builder.append("\n");
@@ -146,7 +149,10 @@ public class WaitingQueueManager {
                         .append(")");
 
                 if (admin) {
-                    builder.append(" | Phone: ").append(item.getPhoneNumber());
+                    builder.append(" | Phone: ")
+                            .append(item.getPhoneNumber())
+                             .append(" | Email: ")
+                            .append(item.getEmail());
                 }
 
                 builder.append("\n");

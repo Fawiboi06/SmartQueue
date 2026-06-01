@@ -239,7 +239,9 @@ public class SmartQueueController {
                 builder.append(" | Username: ")
                         .append(booking.getUsername())
                         .append(" | Phone: ")
-                        .append(booking.getPhoneNumber());
+                        .append(booking.getPhoneNumber())
+                        .append(" | Email: ")
+                        .append(booking.getEmail());
             }
 
             builder.append("\n");
@@ -284,6 +286,8 @@ public class SmartQueueController {
                         .append(")")
                         .append(" | Phone: ")
                         .append(booking.getPhoneNumber())
+                        .append(" | Email: ")
+                        .append(booking.getEmail())
                         .append("\n");
 
                 index++;
