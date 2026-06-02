@@ -1,6 +1,7 @@
 package View;
+
 import javax.swing.*;
-import java.awt.GridLayout;
+import java.awt.*;
 
 public class RegisterView extends JDialog {
 
@@ -16,43 +17,115 @@ public class RegisterView extends JDialog {
         public RegisterView(JFrame parent) {
                 super(parent, "Register", true);
 
-                setSize(400, 330);
-                setLocationRelativeTo(parent);
+                Style.applyGlobalStyle();
 
-                JPanel panel = new JPanel(new GridLayout(7, 2, 10, 10));
-                panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+                setSize(780, 760);
+                setMinimumSize(new Dimension(760, 720));
+                setResizable(false);
 
-                panel.add(new JLabel("Username:"));
+                JPanel root = new JPanel(new GridBagLayout());
+                root.setBackground(Style.BACKGROUND);
+
+                JPanel card = Style.cardLayout(new GridBagLayout());
+                card.setPreferredSize(new Dimension(620, 660));
+
                 usernameField = new JTextField();
-                panel.add(usernameField);
-
-                panel.add(new JLabel("Password:"));
                 passwordField = new JPasswordField();
-                panel.add(passwordField);
-
-                panel.add(new JLabel("Full name:"));
                 fullNameField = new JTextField();
-                panel.add(fullNameField);
-
-                panel.add(new JLabel("Phone number:"));
                 phoneField = new JTextField();
-                panel.add(phoneField);
-
-                panel.add(new JLabel("Email:"));
                 emailField = new JTextField();
-                panel.add(emailField);
-
-                panel.add(new JLabel("Role:"));
                 roleBox = new JComboBox<>(new String[]{"Customer", "Admin"});
-                panel.add(roleBox);
 
-                registerButton = new JButton("Create account");
-                cancelButton = new JButton("Cancel");
+                styleRegisterField(usernameField);
+                styleRegisterField(passwordField);
+                styleRegisterField(fullNameField);
+                styleRegisterField(phoneField);
+                styleRegisterField(emailField);
+                styleRegisterComboBox(roleBox);
 
-                panel.add(registerButton);
-                panel.add(cancelButton);
+                registerButton = Style.primaryButton("Create account");
+                cancelButton = Style.secondaryButton("Cancel");
 
-                add(panel);
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridx = 0;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.weightx = 1;
+
+                JLabel titleLabel = Style.title("Create account");
+                titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+                JLabel subtitleLabel = Style.smallText("Fill in your information below");
+                subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+                gbc.gridy = 0;
+                gbc.insets = new Insets(0, 0, 6, 0);
+                card.add(titleLabel, gbc);
+
+                gbc.gridy = 1;
+                gbc.insets = new Insets(0, 0, 22, 0);
+                card.add(subtitleLabel, gbc);
+
+                addField(card, gbc, 2, "Username", usernameField);
+                addField(card, gbc, 4, "Password", passwordField);
+                addField(card, gbc, 6, "Full name", fullNameField);
+                addField(card, gbc, 8, "Phone number", phoneField);
+                addField(card, gbc, 10, "Email", emailField);
+
+                gbc.gridy = 12;
+                gbc.insets = new Insets(0, 35, 5, 35);
+                card.add(Style.fieldLabel("Role"), gbc);
+
+                gbc.gridy = 13;
+                gbc.insets = new Insets(0, 35, 22, 35);
+                card.add(roleBox, gbc);
+
+                JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 18, 0));
+                buttonPanel.setBackground(Color.WHITE);
+                buttonPanel.add(registerButton);
+                buttonPanel.add(cancelButton);
+
+                gbc.gridy = 14;
+                gbc.insets = new Insets(0, 35, 0, 35);
+                card.add(buttonPanel, gbc);
+
+                root.add(card);
+                setContentPane(root);
+
+                setLocationRelativeTo(null);
+        }
+
+        private void addField(JPanel card, GridBagConstraints gbc, int row, String labelText, JTextField field) {
+                gbc.gridy = row;
+                gbc.insets = new Insets(0, 35, 4, 35);
+                card.add(Style.fieldLabel(labelText), gbc);
+
+                gbc.gridy = row + 1;
+                gbc.insets = new Insets(0, 35, 11, 35);
+                card.add(field, gbc);
+        }
+
+        private void styleRegisterField(JTextField field) {
+                field.setFont(Style.NORMAL_FONT);
+                field.setForeground(Style.TEXT);
+                field.setBackground(Color.WHITE);
+                field.setCaretColor(Style.TEXT);
+
+                field.setPreferredSize(new Dimension(500, 40));
+                field.setMinimumSize(new Dimension(500, 40));
+
+                field.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Style.BORDER, 1),
+                        BorderFactory.createEmptyBorder(7, 12, 7, 12)
+                ));
+        }
+
+        private void styleRegisterComboBox(JComboBox<String> comboBox) {
+                comboBox.setFont(Style.NORMAL_FONT);
+                comboBox.setForeground(Style.TEXT);
+                comboBox.setBackground(Color.WHITE);
+
+                comboBox.setPreferredSize(new Dimension(500, 40));
+                comboBox.setMinimumSize(new Dimension(500, 40));
         }
 
         public String getUsername() {
