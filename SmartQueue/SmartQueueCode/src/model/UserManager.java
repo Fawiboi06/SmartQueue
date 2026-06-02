@@ -11,8 +11,8 @@ public class UserManager {
         users = new ArrayList<>();
 
         // Testkonton tills databas finns
-        users.add(new AdminUser("admin", "admin", "System Admin", "000-000", "admin@smartqueue.se"));
-        users.add(new CustomerUser("kund", "123", "Test Kund", "070-0000000", "kund@test.se"));
+        users.add(new AdminUser("admin", "admin123", "System Admin", "000-000", "admin@smartqueue.se"));
+        users.add(new CustomerUser("kund", "123456", "Test Kund", "070-0000000", "kund@test.se"));
     }
 
     public boolean registerUser(String username, String password, String role,
@@ -23,8 +23,13 @@ public class UserManager {
             return false;
         }
 
-        if (username.trim().length() < 3) return false;
-        if (password.length() < 6) return false;
+        if (username.trim().length() < 3) {
+            return false;
+        }
+
+        if (password.length() < 6) {
+            return false;
+        }
 
         if (findUser(username) != null) {
             return false;

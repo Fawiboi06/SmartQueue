@@ -19,15 +19,15 @@ public class RegisterView extends JDialog {
 
                 Style.applyGlobalStyle();
 
-                setSize(780, 760);
-                setMinimumSize(new Dimension(760, 720));
+                setSize(760, 760);
+                setMinimumSize(new Dimension(720, 720));
                 setResizable(false);
 
                 JPanel root = new JPanel(new GridBagLayout());
                 root.setBackground(Style.BACKGROUND);
 
                 JPanel card = Style.cardLayout(new GridBagLayout());
-                card.setPreferredSize(new Dimension(620, 660));
+                card.setPreferredSize(new Dimension(600, 660));
 
                 usernameField = new JTextField();
                 passwordField = new JPasswordField();
@@ -57,34 +57,44 @@ public class RegisterView extends JDialog {
                 JLabel subtitleLabel = Style.smallText("Fill in your information below");
                 subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
+                JPanel requirementsPanel = createRequirementsPanel();
+
                 gbc.gridy = 0;
-                gbc.insets = new Insets(0, 0, 6, 0);
+                gbc.insets = new Insets(0, 0, 2, 0);
                 card.add(titleLabel, gbc);
 
                 gbc.gridy = 1;
-                gbc.insets = new Insets(0, 0, 22, 0);
+                gbc.insets = new Insets(0, 0, 10, 0);
                 card.add(subtitleLabel, gbc);
 
-                addField(card, gbc, 2, "Username", usernameField);
-                addField(card, gbc, 4, "Password", passwordField);
-                addField(card, gbc, 6, "Full name", fullNameField);
-                addField(card, gbc, 8, "Phone number", phoneField);
-                addField(card, gbc, 10, "Email", emailField);
+                gbc.gridy = 2;
+                gbc.insets = new Insets(0, 35, 12, 35);
+                card.add(requirementsPanel, gbc);
 
-                gbc.gridy = 12;
-                gbc.insets = new Insets(0, 35, 5, 35);
-                card.add(Style.fieldLabel("Role"), gbc);
+                addField(card, gbc, 3, "Username", usernameField);
+                addField(card, gbc, 5, "Password", passwordField);
+                addField(card, gbc, 7, "Full name", fullNameField);
+                addField(card, gbc, 9, "Phone number", phoneField);
+                addField(card, gbc, 11, "Email", emailField);
 
                 gbc.gridy = 13;
-                gbc.insets = new Insets(0, 35, 22, 35);
+                gbc.insets = new Insets(0, 35, 3, 35);
+                card.add(Style.fieldLabel("Role"), gbc);
+
+                gbc.gridy = 14;
+                gbc.insets = new Insets(0, 35, 12, 35);
                 card.add(roleBox, gbc);
 
                 JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 18, 0));
                 buttonPanel.setBackground(Color.WHITE);
+
+                registerButton.setPreferredSize(new Dimension(220, 48));
+                cancelButton.setPreferredSize(new Dimension(220, 48));
+
                 buttonPanel.add(registerButton);
                 buttonPanel.add(cancelButton);
 
-                gbc.gridy = 14;
+                gbc.gridy = 15;
                 gbc.insets = new Insets(0, 35, 0, 35);
                 card.add(buttonPanel, gbc);
 
@@ -94,13 +104,44 @@ public class RegisterView extends JDialog {
                 setLocationRelativeTo(null);
         }
 
+        private JPanel createRequirementsPanel() {
+                JPanel panel = new JPanel(new BorderLayout(0, 4));
+                panel.setBackground(new Color(248, 250, 252));
+                panel.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Style.BORDER),
+                        BorderFactory.createEmptyBorder(8, 12, 8, 12)
+                ));
+
+                JLabel title = new JLabel("Registration requirements");
+                title.setFont(new Font("Segoe UI", Font.BOLD, 13));
+                title.setForeground(Style.DARK);
+
+                JLabel text = new JLabel(
+                        "<html>" +
+                                "Username minimum: 3 characters<br>" +
+                                "Password minimum: 6 characters<br>" +
+                                "Email must contain @<br>" +
+                                "Phone number may contain numbers, +, - and spaces<br>" +
+                                "All fields must be filled in and username must be unique" +
+                                "</html>"
+                );
+
+                text.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                text.setForeground(Style.TEXT);
+
+                panel.add(title, BorderLayout.NORTH);
+                panel.add(text, BorderLayout.CENTER);
+
+                return panel;
+        }
+
         private void addField(JPanel card, GridBagConstraints gbc, int row, String labelText, JTextField field) {
                 gbc.gridy = row;
-                gbc.insets = new Insets(0, 35, 4, 35);
+                gbc.insets = new Insets(0, 35, 2, 35);
                 card.add(Style.fieldLabel(labelText), gbc);
 
                 gbc.gridy = row + 1;
-                gbc.insets = new Insets(0, 35, 11, 35);
+                gbc.insets = new Insets(0, 35, 7, 35);
                 card.add(field, gbc);
         }
 
@@ -110,12 +151,12 @@ public class RegisterView extends JDialog {
                 field.setBackground(Color.WHITE);
                 field.setCaretColor(Style.TEXT);
 
-                field.setPreferredSize(new Dimension(500, 40));
-                field.setMinimumSize(new Dimension(500, 40));
+                field.setPreferredSize(new Dimension(500, 34));
+                field.setMinimumSize(new Dimension(500, 34));
 
                 field.setBorder(BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(Style.BORDER, 1),
-                        BorderFactory.createEmptyBorder(7, 12, 7, 12)
+                        BorderFactory.createEmptyBorder(5, 12, 5, 12)
                 ));
         }
 
@@ -124,8 +165,8 @@ public class RegisterView extends JDialog {
                 comboBox.setForeground(Style.TEXT);
                 comboBox.setBackground(Color.WHITE);
 
-                comboBox.setPreferredSize(new Dimension(500, 40));
-                comboBox.setMinimumSize(new Dimension(500, 40));
+                comboBox.setPreferredSize(new Dimension(500, 34));
+                comboBox.setMinimumSize(new Dimension(500, 34));
         }
 
         public String getUsername() {

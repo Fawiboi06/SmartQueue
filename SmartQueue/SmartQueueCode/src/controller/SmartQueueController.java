@@ -628,12 +628,13 @@ public class SmartQueueController {
             Dialog.showError(
                     registerView,
                     "Could not register. Make sure:\n" +
-                            "- Username is at least 3 characters\n" +
-                            "- Password is at least 6 characters\n" +
+                            "- Username minimum is 3 characters\n" +
+                            "- Password minimum is 6 characters\n" +
                             "- Email contains @\n" +
-                            "- Phone number contains only numbers\n" +
+                            "- Phone number contains only numbers, +, - and spaces\n" +
                             "- All fields are filled in\n" +
-                            "- Username is not already taken"            );
+                            "- Username is not already taken"
+            );
             return;
         }
 
