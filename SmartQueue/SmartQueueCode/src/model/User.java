@@ -33,6 +33,10 @@ public class User {
         return "Admin".equalsIgnoreCase(role);
     }
 
+    public boolean isCustomer() {
+        return "Customer".equalsIgnoreCase(role);
+    }
+
     public String getFullName() {
         return fullName;
     }
@@ -41,8 +45,16 @@ public class User {
         return phoneNumber;
     }
 
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
