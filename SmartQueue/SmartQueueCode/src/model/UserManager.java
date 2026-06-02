@@ -18,28 +18,11 @@ public class UserManager {
     public boolean registerUser(String username, String password, String role,
                                 String fullName, String phoneNumber, String email) {
 
-        if (isBlank(username) || isBlank(password) || isBlank(role)
-                || isBlank(fullName) || isBlank(phoneNumber) || isBlank(email)) {
-            return false;
-        }
-
-        if (username.trim().length() < 3) {
-            return false;
-        }
-
-        if (password.length() < 6) {
+        if (!isValidRegistration(username, password, role, fullName, phoneNumber, email)) {
             return false;
         }
 
         if (findUser(username) != null) {
-            return false;
-        }
-
-        if (!phoneNumber.matches("[0-9+\\- ]+")) {
-            return false;
-        }
-
-        if (!email.contains("@")) {
             return false;
         }
 
@@ -62,6 +45,96 @@ public class UserManager {
         }
 
         return true;
+    }
+
+    private boolean isValidRegistration(String username, String password, String role,
+                                        String fullName, String phoneNumber, String email) {
+
+        if (isBlank(username) || isBlank(password) || isBlank(role)
+                || isBlank(fullName) || isBlank(phoneNumber) || isBlank(email)) {
+            return false;
+        }
+
+        if (username.trim().length() < 3) {
+            return false;
+        }
+
+        if (password.length() < 6) {
+            return false;
+        }
+
+        if (!isValidPhone(phoneNumber)) {
+            return false;
+        }
+
+        if (!isValidEmail(email)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean updateContactInfo(String username, String phoneNumber, String email) {
+        User user = findUser(username);
+
+        if (user == null) {
+            return false;
+        }
+
+        if (!isValidPhone(phoneNumber)) {
+            return false;
+        }
+
+        if (!isValidEmail(email)) {
+            return false;
+        }
+
+        user.setPhoneNumber(phoneNumber.trim());
+        user.setEmail(email.trim());
+
+        return true;
+    }
+
+    public boolean isValidCustomerBookingInfo(String username, String fullName, String phoneNumber, String email) {
+        if (isBlank(username) || isBlank(fullName) || isBlank(phoneNumber) || isBlank(email)) {
+            return false;
+        }
+
+        if (username.trim().length() < 3) {
+            return false;
+        }
+
+        if (!isValidPhone(phoneNumber)) {
+            return false;
+        }
+
+        if (!isValidEmail(email)) {
+            return false;
+        }
+
+        User existingUser = findUser(username);
+
+        if (existingUser != null && existingUser.isAdmin()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean isValidPhone(String phoneNumber) {
+        if (isBlank(phoneNumber)) {
+            return false;
+        }
+
+        return phoneNumber.matches("[0-9+\\- ]+");
+    }
+
+    public boolean isValidEmail(String email) {
+        if (isBlank(email)) {
+            return false;
+        }
+
+        return email.contains("@");
     }
 
     public User login(String username, String password) {
