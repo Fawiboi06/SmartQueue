@@ -11,39 +11,90 @@ public class LoginView extends JFrame {
     private JButton registerButton;
 
     public LoginView() {
-        setTitle("Login");
-        setSize(350, 220);
+        Style.applyGlobalStyle();
+
+        setTitle("SmartQueue Login");
+        setSize(900, 720);
+        setMinimumSize(new Dimension(800, 650));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        JPanel root = new JPanel(new GridBagLayout());
+        root.setBackground(Style.BACKGROUND);
 
-        panel.add(new JLabel("Username:"));
+        JPanel card = Style.cardLayout(new GridBagLayout());
+        card.setPreferredSize(new Dimension(700, 560));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        JLabel titleLabel = Style.title("SmartQueue");
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JLabel subtitleLabel = Style.smallText("Login to manage bookings and queues");
+        subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
         usernameField = new JTextField();
-        panel.add(usernameField);
-
-        panel.add(new JLabel("Password:"));
         passwordField = new JPasswordField();
-        panel.add(passwordField);
 
-        loginButton = new JButton("Login");
-        registerButton = new JButton("Register");
+        Style.styleTextField(usernameField);
+        Style.styleTextField(passwordField);
 
-        panel.add(loginButton);
-        panel.add(registerButton);
+        loginButton = Style.primaryButton("Login");
+        registerButton = Style.secondaryButton("Register");
 
-        JLabel testLabel = new JLabel("Test: admin/admin or kund/123");
-        panel.add(testLabel);
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 8, 0);
+        card.add(titleLabel, gbc);
 
-        add(panel);
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, 0, 35, 0);
+        card.add(subtitleLabel, gbc);
+
+        gbc.gridy = 2;
+        gbc.insets = new Insets(0, 45, 6, 45);
+        card.add(Style.fieldLabel("Username"), gbc);
+
+        gbc.gridy = 3;
+        gbc.insets = new Insets(0, 45, 24, 45);
+        card.add(usernameField, gbc);
+
+        gbc.gridy = 4;
+        gbc.insets = new Insets(0, 45, 6, 45);
+        card.add(Style.fieldLabel("Password"), gbc);
+
+        gbc.gridy = 5;
+        gbc.insets = new Insets(0, 45, 35, 45);
+        card.add(passwordField, gbc);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
+        buttonPanel.setBackground(Color.WHITE);
+        buttonPanel.add(loginButton);
+        buttonPanel.add(registerButton);
+
+        gbc.gridy = 6;
+        gbc.insets = new Insets(0, 45, 28, 45);
+        card.add(buttonPanel, gbc);
+
+        JLabel testLabel = Style.smallText("Test: admin/admin or kund/123");
+        testLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        gbc.gridy = 7;
+        gbc.insets = new Insets(0, 45, 0, 45);
+        card.add(testLabel, gbc);
+
+        root.add(card);
+        setContentPane(root);
     }
 
     public String getUsername() {
         return usernameField.getText();
     }
 
-    public String getPassword() {return new String(passwordField.getPassword());
+    public String getPassword() {
+        return new String(passwordField.getPassword());
     }
 
     public JButton getLoginButton() {

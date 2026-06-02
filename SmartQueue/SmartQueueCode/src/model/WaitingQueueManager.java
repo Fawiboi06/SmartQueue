@@ -1,17 +1,15 @@
 package model;
 
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-
 public class WaitingQueueManager {
 
-
     private Map<String, Queue<QueueItem>> waitingQueues;
-
 
     public WaitingQueueManager() {
         waitingQueues = new HashMap<>();
@@ -40,6 +38,7 @@ public class WaitingQueueManager {
                 user.getPhoneNumber(),
                 user.getEmail()
         ));
+
         return true;
     }
 
@@ -47,6 +46,7 @@ public class WaitingQueueManager {
         String key = createKey(date, time);
 
         Queue<QueueItem> queue = waitingQueues.get(key);
+
         if (queue == null || queue.isEmpty()) {
             return null;
         }
@@ -78,7 +78,23 @@ public class WaitingQueueManager {
 
     public boolean isUserWaiting(String date, String time, String username) {
         return getQueuePosition(date, time, username) != -1;
-    } // Kolla om den behövs implementeras eller raderas
+    }
+
+    public Map<String, List<QueueItem>> getWaitingQueuesSnapshot() {
+        Map<String, List<QueueItem>> snapshot = new HashMap<>();
+
+        for (String key : waitingQueues.keySet()) {
+            Queue<QueueItem> queue = waitingQueues.get(key);
+
+            if (queue == null || queue.isEmpty()) {
+                continue;
+            }
+
+            snapshot.put(key, new ArrayList<>(queue));
+        }
+
+        return snapshot;
+    }
 
     public String getQueueInfoForTime(String date, String time, boolean admin) {
         String key = createKey(date, time);
@@ -151,7 +167,7 @@ public class WaitingQueueManager {
                 if (admin) {
                     builder.append(" | Phone: ")
                             .append(item.getPhoneNumber())
-                             .append(" | Email: ")
+                            .append(" | Email: ")
                             .append(item.getEmail());
                 }
 
