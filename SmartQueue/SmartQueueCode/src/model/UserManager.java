@@ -23,11 +23,14 @@ public class UserManager {
             return false;
         }
 
-        if (!phoneNumber.matches("[0-9+\\- ]+")) {
+        if (username.trim().length() < 3) return false;
+        if (password.length() < 6) return false;
+
+        if (findUser(username) != null) {
             return false;
         }
 
-        if (findUser(username) != null) {
+        if (!phoneNumber.matches("[0-9+\\- ]+")) {
             return false;
         }
 

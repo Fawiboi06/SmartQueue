@@ -455,8 +455,13 @@ public class SmartQueueController {
         if (!registered) {
             JOptionPane.showMessageDialog(
                     registerView,
-                    "Could not register.\nCheck all fields, email format or username already exists."
-            );
+                    "Could not register. Make sure:\n" +
+                            "- Username is at least 3 characters\n" +
+                            "- Password is at least 6 characters\n" +
+                            "- Email contains @\n" +
+                            "- Phone number contains only numbers\n" +
+                            "- All fields are filled in\n" +
+                            "- Username is not already taken"            );
             return;
         }
 
