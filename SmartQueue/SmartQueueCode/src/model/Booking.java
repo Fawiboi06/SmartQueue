@@ -35,7 +35,7 @@ public class Booking {
 
     public String getPhoneNumber() {return phoneNumber;}
 
-    public String getEmail() {return email;} //Implementeras eller raderas
+    public String getEmail() {return email;}
 
     @Override
     public String toString() {

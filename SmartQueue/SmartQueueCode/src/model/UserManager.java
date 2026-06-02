@@ -23,6 +23,10 @@ public class UserManager {
             return false;
         }
 
+        if (!phoneNumber.matches("[0-9+\\- ]+")) {
+            return false;
+        }
+
         if (findUser(username) != null) {
             return false;
         }
