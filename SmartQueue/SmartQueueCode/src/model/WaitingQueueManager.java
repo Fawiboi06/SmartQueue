@@ -16,7 +16,25 @@ public class WaitingQueueManager {
     }
 
     public boolean addToWaitingQueue(String date, String time, User user) {
-        if (date == null || date.isBlank() || time == null || time.isBlank() || user == null) {
+        if (user == null) {
+            return false;
+        }
+
+        return addToWaitingQueue(
+                date,
+                time,
+                user.getUsername(),
+                user.getFullName(),
+                user.getPhoneNumber(),
+                user.getEmail()
+        );
+    }
+
+    public boolean addToWaitingQueue(String date, String time, String username,
+                                     String fullName, String phoneNumber, String email) {
+
+        if (isBlank(date) || isBlank(time) || isBlank(username)
+                || isBlank(fullName) || isBlank(phoneNumber) || isBlank(email)) {
             return false;
         }
 
@@ -27,16 +45,16 @@ public class WaitingQueueManager {
         Queue<QueueItem> queue = waitingQueues.get(key);
 
         for (QueueItem item : queue) {
-            if (item.getUsername().equalsIgnoreCase(user.getUsername())) {
+            if (item.getUsername().equalsIgnoreCase(username.trim())) {
                 return false;
             }
         }
 
         queue.add(new QueueItem(
-                user.getUsername(),
-                user.getFullName(),
-                user.getPhoneNumber(),
-                user.getEmail()
+                username.trim(),
+                fullName.trim(),
+                phoneNumber.trim(),
+                email.trim()
         ));
 
         return true;
@@ -74,10 +92,6 @@ public class WaitingQueueManager {
         }
 
         return -1;
-    }
-
-    public boolean isUserWaiting(String date, String time, String username) {
-        return getQueuePosition(date, time, username) != -1;
     }
 
     public Map<String, List<QueueItem>> getWaitingQueuesSnapshot() {
@@ -137,86 +151,11 @@ public class WaitingQueueManager {
         return builder.toString();
     }
 
-    public String getAllQueuesInfo(boolean admin) {
-        if (waitingQueues.isEmpty()) {
-            return "No waiting queues.";
-        }
-
-        StringBuilder builder = new StringBuilder();
-
-        for (String key : waitingQueues.keySet()) {
-            Queue<QueueItem> queue = waitingQueues.get(key);
-
-            if (queue == null || queue.isEmpty()) {
-                continue;
-            }
-
-            builder.append(key).append("\n");
-
-            int position = 1;
-
-            for (QueueItem item : queue) {
-                builder.append("  ")
-                        .append(position)
-                        .append(". ")
-                        .append(item.getFullName())
-                        .append(" (")
-                        .append(item.getUsername())
-                        .append(")");
-
-                if (admin) {
-                    builder.append(" | Phone: ")
-                            .append(item.getPhoneNumber())
-                            .append(" | Email: ")
-                            .append(item.getEmail());
-                }
-
-                builder.append("\n");
-                position++;
-            }
-
-            builder.append("\n");
-        }
-
-        if (builder.length() == 0) {
-            return "No waiting queues.";
-        }
-
-        return builder.toString();
-    }
-
-    public String getUserQueueInfo(String username) {
-        StringBuilder builder = new StringBuilder();
-
-        for (String key : waitingQueues.keySet()) {
-            Queue<QueueItem> queue = waitingQueues.get(key);
-
-            if (queue == null || queue.isEmpty()) {
-                continue;
-            }
-
-            int position = 1;
-
-            for (QueueItem item : queue) {
-                if (item.getUsername().equalsIgnoreCase(username)) {
-                    builder.append(key)
-                            .append(" | Queue position: ")
-                            .append(position)
-                            .append("\n");
-                }
-
-                position++;
-            }
-        }
-
-        if (builder.length() == 0) {
-            return "You are not waiting for any time.";
-        }
-
-        return builder.toString();
-    }
-
     private String createKey(String date, String time) {
         return date + " " + time;
+    }
+
+    private boolean isBlank(String text) {
+        return text == null || text.isBlank();
     }
 }
