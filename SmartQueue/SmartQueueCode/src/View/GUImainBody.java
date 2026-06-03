@@ -298,7 +298,14 @@ public class GUImainBody extends JFrame {
     }
 
     public void setAdminMode(boolean admin) {
-        showPersonInfoButton.setVisible(admin);
+        showPersonInfoButton.setVisible(true);
+
+        if (admin) {
+            showPersonInfoButton.setText("Show person info");
+        } else {
+            showPersonInfoButton.setText("My profile");
+        }
+
         revalidate();
         repaint();
     }
