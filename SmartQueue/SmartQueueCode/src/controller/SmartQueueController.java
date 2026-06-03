@@ -12,6 +12,8 @@ import model.QueueItem;
 import model.User;
 import model.UserManager;
 import model.WaitingQueueManager;
+import View.CustomerBookingView;
+import View.ProfileView;
 
 import javax.swing.*;
 import java.time.YearMonth;
@@ -26,6 +28,8 @@ public class SmartQueueController {
     private GUImainBody mainView;
     private DayBookingView dayBookingView;
     private ListView listView;
+    private ProfileView profileView;
+    private CustomerBookingView customerBookingView;
 
     private final BookingManager bookingManager;
     private final UserManager userManager;
@@ -201,6 +205,11 @@ public class SmartQueueController {
             return;
         }
 
+        if (loggedInUser.isAdmin()) {
+            openCustomerBookingForAdmin(time);
+            return;
+        }
+
         Booking existingBooking = bookingManager.getBookingAt(selectedDate, time);
 
         if (existingBooking == null) {
@@ -262,6 +271,90 @@ public class SmartQueueController {
             );
         }
 
+        dayBookingView.updateTimes(createTimeRowsForSelectedDate());
+    }
+
+    private void openCustomerBookingForAdmin(String time) {
+        Booking existingBooking = bookingManager.getBookingAt(selectedDate, time);
+        boolean bookedTime = existingBooking != null;
+
+        customerBookingView = new CustomerBookingView(dayBookingView, selectedDate, time, bookedTime);
+
+        customerBookingView.getConfirmButton().addActionListener(e -> createAdminCustomerBooking(time, bookedTime));
+        customerBookingView.getCancelButton().addActionListener(e -> customerBookingView.dispose());
+
+        customerBookingView.setVisible(true);
+    }
+
+    private void createAdminCustomerBooking(String time, boolean bookedTime) {
+        String customerUsername = customerBookingView.getCustomerUsername();
+        String customerFullName = customerBookingView.getCustomerFullName();
+        String customerPhone = customerBookingView.getCustomerPhone();
+        String customerEmail = customerBookingView.getCustomerEmail();
+
+        boolean validInfo = userManager.isValidCustomerBookingInfo(
+                customerUsername,
+                customerFullName,
+                customerPhone,
+                customerEmail
+        );
+
+        if (!validInfo) {
+            Dialog.showError(
+                    customerBookingView,
+                    "Could not create customer booking. Make sure:\n" +
+                            "- Username minimum is 3 characters\n" +
+                            "- Full name is filled in\n" +
+                            "- Email contains @\n" +
+                            "- Phone number contains only numbers, +, - and spaces\n" +
+                            "- Admin usernames are not used as customer bookings"
+            );
+            return;
+        }
+
+        if (!bookedTime) {
+            Booking newBooking = new Booking(
+                    selectedDate,
+                    time,
+                    customerUsername.trim(),
+                    customerFullName.trim(),
+                    customerPhone.trim(),
+                    customerEmail.trim()
+            );
+
+            boolean created = bookingManager.addBooking(newBooking);
+
+            if (!created) {
+                Dialog.showError(customerBookingView, "Could not create booking.");
+                return;
+            }
+
+            Dialog.showSuccess(customerBookingView, "Customer booking created.");
+        } else {
+            boolean added = waitingQueueManager.addToWaitingQueue(
+                    selectedDate,
+                    time,
+                    customerUsername,
+                    customerFullName,
+                    customerPhone,
+                    customerEmail
+            );
+
+            if (!added) {
+                Dialog.showError(customerBookingView, "Could not add customer to waiting queue.");
+                return;
+            }
+
+            int position = waitingQueueManager.getQueuePosition(selectedDate, time, customerUsername);
+
+            Dialog.showInfo(
+                    customerBookingView,
+                    "Waiting queue",
+                    "The time is already booked.\nCustomer was added to the waiting queue.\nPosition: " + position
+            );
+        }
+
+        customerBookingView.dispose();
         dayBookingView.updateTimes(createTimeRowsForSelectedDate());
     }
 
@@ -583,28 +676,59 @@ public class SmartQueueController {
     }
 
     private void showPersonInfo() {
-        if (!loggedInUser.isAdmin()) {
-            Dialog.showError(mainView, "Only admin can see person info.");
+        if (loggedInUser.isAdmin()) {
+            StringBuilder builder = new StringBuilder();
+
+            for (User user : userManager.getUsers()) {
+                builder.append("Username: ")
+                        .append(user.getUsername())
+                        .append(" | Name: ")
+                        .append(user.getFullName())
+                        .append(" | Phone: ")
+                        .append(user.getPhoneNumber())
+                        .append(" | Email: ")
+                        .append(user.getEmail())
+                        .append(" | Role: ")
+                        .append(user.getRole())
+                        .append("\n");
+            }
+
+            Dialog.showInfo(mainView, "Person info", builder.toString());
             return;
         }
 
-        StringBuilder builder = new StringBuilder();
+        profileView = new ProfileView(mainView, loggedInUser);
 
-        for (User user : userManager.getUsers()) {
-            builder.append("Username: ")
-                    .append(user.getUsername())
-                    .append(" | Name: ")
-                    .append(user.getFullName())
-                    .append(" | Phone: ")
-                    .append(user.getPhoneNumber())
-                    .append(" | Email: ")
-                    .append(user.getEmail())
-                    .append(" | Role: ")
-                    .append(user.getRole())
-                    .append("\n");
+        profileView.getSaveButton().addActionListener(e -> updateCustomerProfile());
+        profileView.getCancelButton().addActionListener(e -> profileView.dispose());
+
+        profileView.setVisible(true);
+    }
+
+    private void updateCustomerProfile() {
+        String phone = profileView.getPhone();
+        String email = profileView.getEmail();
+
+        boolean updated = userManager.updateContactInfo(
+                loggedInUser.getUsername(),
+                phone,
+                email
+        );
+
+        if (!updated) {
+            Dialog.showError(
+                    profileView,
+                    "Could not update profile. Make sure:\n" +
+                            "- Email contains @\n" +
+                            "- Phone number contains only numbers, +, - and spaces"
+            );
+            return;
         }
 
-        Dialog.showInfo(mainView, "Person info", builder.toString());
+        loggedInUser = userManager.findUser(loggedInUser.getUsername());
+
+        Dialog.showSuccess(profileView, "Profile updated.");
+        profileView.dispose();
     }
 
     private void createAccount() {
