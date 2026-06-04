@@ -84,12 +84,12 @@ public class LoginView extends JFrame {
         gbc.insets = new Insets(0, 45, 24, 45);
         card.add(buttonPanel, gbc);
 
-        JLabel testLabel = Style.smallText("Test: admin/admin123 or kund/123456");
-        testLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        //JLabel testLabel = Style.smallText("Test: admin/admin123 or kund/123456");
+        //testLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         gbc.gridy = 8;
         gbc.insets = new Insets(0, 45, 0, 45);
-        card.add(testLabel, gbc);
+       // card.add(testLabel, gbc);
 
         root.add(card);
         setContentPane(root);
