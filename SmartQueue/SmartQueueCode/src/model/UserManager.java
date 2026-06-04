@@ -279,6 +279,122 @@ public class UserManager {
         return users;
     }
 
+    public String getRegistrationError(String username, String password, String role,
+                                       String fullName, String phoneNumber, String email) {
+
+        if (isBlank(username)) {
+            return "Username must be filled in.";
+        }
+
+        if (username.trim().length() < 3) {
+            return "Username must be at least 3 characters.";
+        }
+
+        if (findUser(username) != null) {
+            return "Username is already taken.";
+        }
+
+        if (isBlank(password)) {
+            return "Password must be filled in.";
+        }
+
+        if (password.length() < 6) {
+            return "Password must be at least 6 characters.";
+        }
+
+        if (isBlank(role)) {
+            return "Role must be selected.";
+        }
+
+        if (!role.equalsIgnoreCase("Customer") && !role.equalsIgnoreCase("Admin")) {
+            return "Role must be Customer or Admin.";
+        }
+
+        if (isBlank(fullName)) {
+            return "Full name must be filled in.";
+        }
+
+        if (isBlank(phoneNumber)) {
+            return "Phone number must be filled in.";
+        }
+
+        if (!isValidPhone(phoneNumber)) {
+            return "Phone number may only contain numbers, +, - and spaces.";
+        }
+
+        if (isBlank(email)) {
+            return "Email must be filled in.";
+        }
+
+        if (!isValidEmail(email)) {
+            return "Email must contain @.";
+        }
+
+        return null;
+    }
+
+
+    public String getCustomerBookingInfoError(String username, String fullName,
+                                              String phoneNumber, String email) {
+
+        if (isBlank(username)) {
+            return "Customer username must be filled in.";
+        }
+
+        if (username.trim().length() < 3) {
+            return "Customer username must be at least 3 characters.";
+        }
+
+        if (isBlank(fullName)) {
+            return "Customer full name must be filled in.";
+        }
+
+        if (isBlank(phoneNumber)) {
+            return "Customer phone number must be filled in.";
+        }
+
+        if (!isValidPhone(phoneNumber)) {
+            return "Customer phone number may only contain numbers, +, - and spaces.";
+        }
+
+        if (isBlank(email)) {
+            return "Customer email must be filled in.";
+        }
+
+        if (!isValidEmail(email)) {
+            return "Customer email must contain @.";
+        }
+
+        User existingUser = findUser(username);
+
+        if (existingUser != null && existingUser.isAdmin()) {
+            return "Admin usernames cannot be used as customer bookings.";
+        }
+
+        return null;
+    }
+
+
+    public String getContactInfoError(String phoneNumber, String email) {
+
+        if (isBlank(phoneNumber)) {
+            return "Phone number must be filled in.";
+        }
+
+        if (!isValidPhone(phoneNumber)) {
+            return "Phone number may only contain numbers, +, - and spaces.";
+        }
+
+        if (isBlank(email)) {
+            return "Email must be filled in.";
+        }
+
+        if (!isValidEmail(email)) {
+            return "Email must contain @.";
+        }
+
+        return null;
+    }
 
     private boolean isBlank(String text) {
         return text == null || text.isBlank();

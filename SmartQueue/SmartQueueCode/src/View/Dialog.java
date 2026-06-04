@@ -28,7 +28,8 @@ public class Dialog {
         JDialog dialog = new JDialog();
         dialog.setTitle(title);
         dialog.setModal(true);
-        dialog.setSize(520, 260);
+        dialog.setSize(600, 330);
+        dialog.setMinimumSize(new Dimension(560, 300));
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(parent);
 
@@ -36,15 +37,15 @@ public class Dialog {
         rootPanel.setBackground(BACKGROUND);
         rootPanel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
 
-        JPanel cardPanel = new JPanel(new BorderLayout(0, 22));
+        JPanel cardPanel = new JPanel(new BorderLayout(0, 18));
         cardPanel.setBackground(CARD);
         cardPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(BORDER),
-                BorderFactory.createEmptyBorder(26, 32, 24, 32)
+                BorderFactory.createEmptyBorder(24, 32, 24, 32)
         ));
 
         JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 30));
         titleLabel.setForeground(TEXT_DARK);
 
         JTextArea messageArea = new JTextArea(message);
@@ -57,10 +58,11 @@ public class Dialog {
         messageArea.setWrapStyleWord(true);
         messageArea.setBorder(null);
 
-        JPanel textPanel = new JPanel(new BorderLayout(0, 12));
-        textPanel.setBackground(CARD);
-        textPanel.add(titleLabel, BorderLayout.NORTH);
-        textPanel.add(messageArea, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(messageArea);
+        scrollPane.setBorder(null);
+        scrollPane.setBackground(CARD);
+        scrollPane.getViewport().setBackground(CARD);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         JButton okButton = createPrimaryButton("OK");
         okButton.addActionListener(e -> dialog.dispose());
@@ -69,7 +71,8 @@ public class Dialog {
         buttonPanel.setBackground(CARD);
         buttonPanel.add(okButton);
 
-        cardPanel.add(textPanel, BorderLayout.CENTER);
+        cardPanel.add(titleLabel, BorderLayout.NORTH);
+        cardPanel.add(scrollPane, BorderLayout.CENTER);
         cardPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         rootPanel.add(cardPanel, BorderLayout.CENTER);

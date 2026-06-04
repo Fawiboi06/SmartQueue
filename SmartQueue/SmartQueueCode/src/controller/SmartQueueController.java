@@ -292,23 +292,15 @@ public class SmartQueueController {
         String customerPhone = customerBookingView.getCustomerPhone();
         String customerEmail = customerBookingView.getCustomerEmail();
 
-        boolean validInfo = userManager.isValidCustomerBookingInfo(
+        String errorMessage = userManager.getCustomerBookingInfoError(
                 customerUsername,
                 customerFullName,
                 customerPhone,
                 customerEmail
         );
 
-        if (!validInfo) {
-            Dialog.showError(
-                    customerBookingView,
-                    "Could not create customer booking. Make sure:\n" +
-                            "- Username minimum is 3 characters\n" +
-                            "- Full name is filled in\n" +
-                            "- Email contains @\n" +
-                            "- Phone number contains only numbers, +, - and spaces\n" +
-                            "- Admin usernames are not used as customer bookings"
-            );
+        if (errorMessage != null) {
+            Dialog.showError(customerBookingView, errorMessage);
             return;
         }
 
@@ -709,6 +701,13 @@ public class SmartQueueController {
         String phone = profileView.getPhone();
         String email = profileView.getEmail();
 
+        String errorMessage = userManager.getContactInfoError(phone, email);
+
+        if (errorMessage != null) {
+            Dialog.showError(profileView, errorMessage);
+            return;
+        }
+
         boolean updated = userManager.updateContactInfo(
                 loggedInUser.getUsername(),
                 phone,
@@ -716,12 +715,7 @@ public class SmartQueueController {
         );
 
         if (!updated) {
-            Dialog.showError(
-                    profileView,
-                    "Could not update profile. Make sure:\n" +
-                            "- Email contains @\n" +
-                            "- Phone number contains only numbers, +, - and spaces"
-            );
+            Dialog.showError(profileView, "Could not update profile. Please try again.");
             return;
         }
 
@@ -739,6 +733,20 @@ public class SmartQueueController {
         String email = registerView.getEmail();
         String role = registerView.getSelectedRole();
 
+        String errorMessage = userManager.getRegistrationError(
+                username,
+                password,
+                role,
+                fullName,
+                phone,
+                email
+        );
+
+        if (errorMessage != null) {
+            Dialog.showError(registerView, errorMessage);
+            return;
+        }
+
         boolean registered = userManager.registerUser(
                 username,
                 password,
@@ -749,16 +757,7 @@ public class SmartQueueController {
         );
 
         if (!registered) {
-            Dialog.showError(
-                    registerView,
-                    "Could not register. Make sure:\n" +
-                            "- Username minimum is 3 characters\n" +
-                            "- Password minimum is 6 characters\n" +
-                            "- Email contains @\n" +
-                            "- Phone number contains only numbers, +, - and spaces\n" +
-                            "- All fields are filled in\n" +
-                            "- Username is not already taken"
-            );
+            Dialog.showError(registerView, "Could not register account. Please try again.");
             return;
         }
 
