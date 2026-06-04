@@ -1,51 +1,50 @@
 package model;
 
+import database.DBConnection;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserManager {
 
-    private List<User> users;
-
-    public UserManager() {
-        users = new ArrayList<>();
-
-        // Testkonton tills databas finns
-        users.add(new AdminUser("admin", "admin123", "System Admin", "000-000", "admin@smartqueue.se"));
-        users.add(new CustomerUser("kund", "123456", "Test Kund", "070-0000000", "kund@test.se"));
-    }
 
     public boolean registerUser(String username, String password, String role,
                                 String fullName, String phoneNumber, String email) {
 
-        if (!isValidRegistration(username, password, role, fullName, phoneNumber, email)) {
+
+        if (!isValidRegistration(username, password, role,
+                fullName, phoneNumber, email)) {
             return false;
         }
+
 
         if (findUser(username) != null) {
             return false;
         }
 
-        if ("Admin".equalsIgnoreCase(role)) {
-            users.add(new AdminUser(
-                    username.trim(),
-                    password,
-                    fullName.trim(),
-                    phoneNumber.trim(),
-                    email.trim()
-            ));
-        } else {
-            users.add(new CustomerUser(
-                    username.trim(),
-                    password,
-                    fullName.trim(),
-                    phoneNumber.trim(),
-                    email.trim()
-            ));
-        }
 
-        return true;
+        String sql = "INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username.trim());
+            stmt.setString(2, password);
+            stmt.setString(3, role);
+            stmt.setString(4, fullName.trim());
+            stmt.setString(5, phoneNumber.trim());
+            stmt.setString(6, email.trim());
+
+            stmt.executeUpdate();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
 
     private boolean isValidRegistration(String username, String password, String role,
                                         String fullName, String phoneNumber, String email) {
@@ -74,12 +73,8 @@ public class UserManager {
         return true;
     }
 
-    public boolean updateContactInfo(String username, String phoneNumber, String email) {
-        User user = findUser(username);
 
-        if (user == null) {
-            return false;
-        }
+    public boolean updateContactInfo(String username, String phoneNumber, String email) {
 
         if (!isValidPhone(phoneNumber)) {
             return false;
@@ -89,14 +84,30 @@ public class UserManager {
             return false;
         }
 
-        user.setPhoneNumber(phoneNumber.trim());
-        user.setEmail(email.trim());
+        String sql = "UPDATE customers SET phone = ?, email = ? WHERE username = ?";
 
-        return true;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, phoneNumber.trim());
+            stmt.setString(2, email.trim());
+            stmt.setString(3, username);
+
+            stmt.executeUpdate();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public boolean isValidCustomerBookingInfo(String username, String fullName, String phoneNumber, String email) {
-        if (isBlank(username) || isBlank(fullName) || isBlank(phoneNumber) || isBlank(email)) {
+
+    public boolean isValidCustomerBookingInfo(String username, String fullName,
+                                              String phoneNumber, String email) {
+
+        if (isBlank(username) || isBlank(fullName)
+                || isBlank(phoneNumber) || isBlank(email)) {
             return false;
         }
 
@@ -121,7 +132,9 @@ public class UserManager {
         return true;
     }
 
+
     public boolean isValidPhone(String phoneNumber) {
+
         if (isBlank(phoneNumber)) {
             return false;
         }
@@ -129,7 +142,9 @@ public class UserManager {
         return phoneNumber.matches("[0-9+\\- ]+");
     }
 
+
     public boolean isValidEmail(String email) {
+
         if (isBlank(email)) {
             return false;
         }
@@ -137,33 +152,133 @@ public class UserManager {
         return email.contains("@");
     }
 
-    public User login(String username, String password) {
-        User user = findUser(username);
 
-        if (user != null && user.checkPassword(password)) {
-            return user;
+    public User login(String username, String password) {
+
+        String sql = "SELECT * FROM customers WHERE username = ? AND password = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                String role = rs.getString("role");
+                String fullName = rs.getString("full_name");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+
+                if ("Admin".equalsIgnoreCase(role)) {
+                    return new AdminUser(username, password,
+                            fullName, phone, email);
+
+                } else {
+                    return new CustomerUser(username, password,
+                            fullName, phone, email);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;
     }
 
+
     public User findUser(String username) {
+
         if (isBlank(username)) {
             return null;
         }
 
-        for (User user : users) {
-            if (user.getUsername().equalsIgnoreCase(username.trim())) {
-                return user;
+        String sql = "SELECT * FROM customers WHERE username = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username.trim());
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                String password = rs.getString("password");
+                String role = rs.getString("role");
+                String fullName = rs.getString("full_name");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+
+                if ("Admin".equalsIgnoreCase(role)) {
+                    return new AdminUser(username, password,
+                            fullName, phone, email);
+
+                } else {
+                    return new CustomerUser(username, password,
+                            fullName, phone, email);
+                }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;
     }
 
+
     public List<User> getUsers() {
-        return new ArrayList<>(users);
+
+        List<User> users = new ArrayList<>();
+
+        String sql = "SELECT * FROM customers";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String role = rs.getString("role");
+                String fullName = rs.getString("full_name");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+
+                if ("Admin".equalsIgnoreCase(role)) {
+
+                    users.add(new AdminUser(
+                            username,
+                            password,
+                            fullName,
+                            phone,
+                            email
+                    ));
+
+                } else {
+
+                    users.add(new CustomerUser(
+                            username,
+                            password,
+                            fullName,
+                            phone,
+                            email
+                    ));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return users;
     }
+
 
     private boolean isBlank(String text) {
         return text == null || text.isBlank();
