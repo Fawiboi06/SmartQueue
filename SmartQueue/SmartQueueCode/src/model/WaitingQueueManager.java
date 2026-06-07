@@ -1,24 +1,16 @@
 package model;
 
+import database.DBConnection;
+
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 
 public class WaitingQueueManager {
 
-    private Map<String, Queue<QueueItem>> waitingQueues;
-
-    public WaitingQueueManager() {
-        waitingQueues = new HashMap<>();
-    }
-
     public boolean addToWaitingQueue(String date, String time, User user) {
-        if (user == null) {
-            return false;
-        }
+
+        if (user == null) return false;
 
         return addToWaitingQueue(
                 date,
@@ -30,132 +22,233 @@ public class WaitingQueueManager {
         );
     }
 
-    public boolean addToWaitingQueue(String date, String time, String username,
-                                     String fullName, String phoneNumber, String email) {
+    public boolean addToWaitingQueue(String date, String time,
+                                     String username, String fullName,
+                                     String phoneNumber, String email) {
 
         if (isBlank(date) || isBlank(time) || isBlank(username)
                 || isBlank(fullName) || isBlank(phoneNumber) || isBlank(email)) {
             return false;
         }
 
-        String key = createKey(date, time);
-
-        waitingQueues.putIfAbsent(key, new LinkedList<>());
-
-        Queue<QueueItem> queue = waitingQueues.get(key);
-
-        for (QueueItem item : queue) {
-            if (item.getUsername().equalsIgnoreCase(username.trim())) {
-                return false;
-            }
+        if (isUserInQueue(date, time, username)) {
+            return false;
         }
 
-        queue.add(new QueueItem(
-                username.trim(),
-                fullName.trim(),
-                phoneNumber.trim(),
-                email.trim()
-        ));
+        String sql = """
+                INSERT INTO waiting_queue(date, time, username, full_name, phone, email, position)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
 
-        return true;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            int position = getQueueSize(date, time) + 1;
+
+            stmt.setString(1, date);
+            stmt.setString(2, time);
+            stmt.setString(3, username);
+            stmt.setString(4, fullName);
+            stmt.setString(5, phoneNumber);
+            stmt.setString(6, email);
+            stmt.setInt(7, position);
+
+            stmt.executeUpdate();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public QueueItem getNextInQueue(String date, String time) {
-        String key = createKey(date, time);
+    public List<QueueItem> getQueueForTime(String date, String time) {
 
-        Queue<QueueItem> queue = waitingQueues.get(key);
+        List<QueueItem> list = new ArrayList<>();
 
-        if (queue == null || queue.isEmpty()) {
-            return null;
+        String sql = """
+                SELECT *
+                FROM waiting_queue
+                WHERE date = ? AND time = ?
+                ORDER BY position
+                """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, date);
+            stmt.setString(2, time);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                list.add(new QueueItem(
+                        rs.getString("username"),
+                        rs.getString("full_name"),
+                        rs.getString("phone"),
+                        rs.getString("email")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        return queue.poll();
+        return list;
     }
 
     public int getQueuePosition(String date, String time, String username) {
-        String key = createKey(date, time);
 
-        Queue<QueueItem> queue = waitingQueues.get(key);
+        String sql = """
+                SELECT position
+                FROM waiting_queue
+                WHERE date = ? AND time = ? AND username = ?
+                """;
 
-        if (queue == null || queue.isEmpty()) {
-            return -1;
-        }
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        int position = 1;
+            stmt.setString(1, date);
+            stmt.setString(2, time);
+            stmt.setString(3, username);
 
-        for (QueueItem item : queue) {
-            if (item.getUsername().equalsIgnoreCase(username)) {
-                return position;
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("position");
             }
 
-            position++;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return -1;
     }
 
-    public Map<String, List<QueueItem>> getWaitingQueuesSnapshot() {
-        Map<String, List<QueueItem>> snapshot = new HashMap<>();
+    public boolean isUserInQueue(String date, String time, String username) {
+        return getQueuePosition(date, time, username) != -1;
+    }
 
-        for (String key : waitingQueues.keySet()) {
-            Queue<QueueItem> queue = waitingQueues.get(key);
+    public QueueItem getNextInQueue(String date, String time) {
 
-            if (queue == null || queue.isEmpty()) {
-                continue;
+        String selectSql = """
+                SELECT *
+                FROM waiting_queue
+                WHERE date = ? AND time = ?
+                ORDER BY position
+                LIMIT 1
+                """;
+
+        String deleteSql = """
+                DELETE FROM waiting_queue
+                WHERE date = ? AND time = ? AND username = ?
+                """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+
+            stmt.setString(1, date);
+            stmt.setString(2, time);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                QueueItem item = new QueueItem(
+                        rs.getString("username"),
+                        rs.getString("full_name"),
+                        rs.getString("phone"),
+                        rs.getString("email")
+                );
+
+                try (PreparedStatement del = conn.prepareStatement(deleteSql)) {
+                    del.setString(1, date);
+                    del.setString(2, time);
+                    del.setString(3, item.getUsername());
+                    del.executeUpdate();
+                }
+
+                updatePositions(date, time);
+
+                return item;
             }
 
-            snapshot.put(key, new ArrayList<>(queue));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        return snapshot;
+        return null;
     }
 
-    public String getQueueInfoForTime(String date, String time, boolean admin) {
-        String key = createKey(date, time);
+    private void updatePositions(String date, String time) {
 
-        Queue<QueueItem> queue = waitingQueues.get(key);
+        String sql = """
+                SELECT username
+                FROM waiting_queue
+                WHERE date = ? AND time = ?
+                ORDER BY position
+                """;
 
-        if (queue == null || queue.isEmpty()) {
-            return "No waiting queue for this time.";
-        }
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        StringBuilder builder = new StringBuilder();
+            stmt.setString(1, date);
+            stmt.setString(2, time);
 
-        builder.append("Waiting queue for ")
-                .append(date)
-                .append(" ")
-                .append(time)
-                .append(":\n");
+            ResultSet rs = stmt.executeQuery();
 
-        int position = 1;
+            int pos = 1;
 
-        for (QueueItem item : queue) {
-            builder.append(position)
-                    .append(". ")
-                    .append(item.getFullName())
-                    .append(" (")
-                    .append(item.getUsername())
-                    .append(")");
+            while (rs.next()) {
 
-            if (admin) {
-                builder.append(" | Phone: ")
-                        .append(item.getPhoneNumber())
-                        .append(" | Email: ")
-                        .append(item.getEmail());
+                try (PreparedStatement update = conn.prepareStatement("""
+                        UPDATE waiting_queue
+                        SET position = ?
+                        WHERE date = ? AND time = ? AND username = ?
+                        """)) {
+
+                    update.setInt(1, pos);
+                    update.setString(2, date);
+                    update.setString(3, time);
+                    update.setString(4, rs.getString("username"));
+
+                    update.executeUpdate();
+                }
+
+                pos++;
             }
 
-            builder.append("\n");
-            position++;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getQueueSize(String date, String time) {
+
+        String sql = """
+                SELECT COUNT(*)
+                FROM waiting_queue
+                WHERE date = ? AND time = ?
+                """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, date);
+            stmt.setString(2, time);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        return builder.toString();
+        return 0;
     }
 
-    private String createKey(String date, String time) {
-        return date + " " + time;
-    }
-
-    private boolean isBlank(String text) {
-        return text == null || text.isBlank();
+    private boolean isBlank(String s) {
+        return s == null || s.isBlank();
     }
 }

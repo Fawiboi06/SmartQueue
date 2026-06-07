@@ -507,26 +507,45 @@ public class SmartQueueController {
     }
 
     private String[][] createWaitingQueueTableRows() {
+
         List<String[]> rows = new ArrayList<>();
-        Map<String, List<QueueItem>> queues = waitingQueueManager.getWaitingQueuesSnapshot();
+
+        List<Booking> bookings = bookingManager.getBookings();
+
+        String[] uniqueKeys = new String[bookings.size()];
+        int keyCount = 0;
+
+        for (Booking b : bookings) {
+            String key = b.getDate() + " " + b.getTime();
+
+            boolean exists = false;
+            for (int i = 0; i < keyCount; i++) {
+                if (uniqueKeys[i].equals(key)) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists) {
+                uniqueKeys[keyCount++] = key;
+            }
+        }
 
         int rowNumber = 1;
 
-        for (String key : queues.keySet()) {
-            String[] dateAndTime = key.split(" ");
+        for (int i = 0; i < keyCount; i++) {
 
-            String date = dateAndTime[0];
-            String time = "";
+            String[] parts = uniqueKeys[i].split(" ");
+            String date = parts[0];
+            String time = parts.length > 1 ? parts[1] : "";
 
-            if (dateAndTime.length > 1) {
-                time = dateAndTime[1];
-            }
-
-            List<QueueItem> queueItems = queues.get(key);
+            List<QueueItem> queueItems =
+                    waitingQueueManager.getQueueForTime(date, time);
 
             int position = 1;
 
             for (QueueItem item : queueItems) {
+
                 if (!loggedInUser.isAdmin() &&
                         !item.getUsername().equalsIgnoreCase(loggedInUser.getUsername())) {
                     position++;
@@ -534,7 +553,7 @@ public class SmartQueueController {
                 }
 
                 if (loggedInUser.isAdmin()) {
-                    String[] row = {
+                    rows.add(new String[]{
                             String.valueOf(rowNumber),
                             date,
                             time,
@@ -543,19 +562,15 @@ public class SmartQueueController {
                             item.getUsername(),
                             item.getPhoneNumber(),
                             item.getEmail()
-                    };
-
-                    rows.add(row);
+                    });
                 } else {
-                    String[] row = {
+                    rows.add(new String[]{
                             String.valueOf(rowNumber),
                             date,
                             time,
                             String.valueOf(position),
                             item.getFullName()
-                    };
-
-                    rows.add(row);
+                    });
                 }
 
                 rowNumber++;
@@ -563,13 +578,7 @@ public class SmartQueueController {
             }
         }
 
-        String[][] result = new String[rows.size()][];
-
-        for (int i = 0; i < rows.size(); i++) {
-            result[i] = rows.get(i);
-        }
-
-        return result;
+        return rows.toArray(new String[0][]);
     }
 
     private void showBookingsForSelectedDay() {
@@ -629,13 +638,47 @@ public class SmartQueueController {
             return;
         }
 
-        String info = waitingQueueManager.getQueueInfoForTime(
-                selectedDate,
-                time,
-                loggedInUser.isAdmin()
-        );
+        List<QueueItem> queue =
+                waitingQueueManager.getQueueForTime(selectedDate, time);
 
-        Dialog.showInfo(dayBookingView, "Waiting queue", info);
+        if (queue.isEmpty()) {
+            Dialog.showInfo(dayBookingView, "Waiting queue", "No waiting queue for this time.");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int position = 1;
+
+        for (QueueItem item : queue) {
+
+            if (!loggedInUser.isAdmin() &&
+                    !item.getUsername().equalsIgnoreCase(loggedInUser.getUsername())) {
+                position++;
+                continue;
+            }
+
+            sb.append(position).append(". ")
+                    .append(item.getFullName());
+
+            if (loggedInUser.isAdmin()) {
+                sb.append(" | ")
+                        .append(item.getUsername())
+                        .append(" | ")
+                        .append(item.getPhoneNumber())
+                        .append(" | ")
+                        .append(item.getEmail());
+            }
+
+            sb.append("\n");
+            position++;
+        }
+
+        if (sb.length() == 0) {
+            Dialog.showInfo(dayBookingView, "Waiting queue", "No visible queue items.");
+            return;
+        }
+
+        Dialog.showInfo(dayBookingView, "Waiting queue", sb.toString());
     }
 
     private void promoteNextCustomerIfPossible(Booking deletedBooking) {
